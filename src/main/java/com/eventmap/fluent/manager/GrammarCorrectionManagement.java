@@ -3,8 +3,10 @@ package com.eventmap.fluent.manager;
 import com.eventmap.fluent.domain.Match;
 import com.eventmap.fluent.domain.Matches;
 
+import com.eventmap.fluent.domain.SummarizeResult;
 import com.eventmap.fluent.domain.json.Rules;
 
+import com.eventmap.fluent.exception.FluentException;
 import com.eventmap.fluent.utils.JSONUtil;
 import com.eventmap.fluent.utils.StaticStrings;
 import com.eventmap.fluent.utils.XMLUtil;
@@ -67,7 +69,7 @@ public class GrammarCorrectionManagement {
         return matches;
     }
 
-    private void loadCustomRules() throws  IOException{
+    private void loadCustomRules() throws IOException{
 
         List<AbstractPatternRule> lsApbstractPatternRule = jLanguageTool.loadPatternRules(StaticStrings.RULES_PATH);
         for (AbstractPatternRule patternRule : lsApbstractPatternRule) {
@@ -93,41 +95,10 @@ public class GrammarCorrectionManagement {
         return "Your rule is successfully added to library";
     }
 
-    public void bindFile(){
+    public SummarizeResult getSummarize(String finalResult){
+        SummarizeResult summarizeResult = new SummarizeResult();
 
-    }
-
-    @Test
-    public void abc(){
-        GrammarCorrectionManagement grammarCorrectionManagement = new GrammarCorrectionManagement();
-        /*grammarCorrectionManagement.addRule("{\n" +
-            "  \"category\": {\n" +
-            "    \"id\": \"HUY\",\n" +
-            "    \"name\": \"Possible Typo\",\n" +
-            "    \"type\": \"misspelling\",\n" +
-            "    \"rule\": {\n" +
-            "      \"id\": \"ABC\",\n" +
-            "      \"name\": \"ABCD (won't)\",\n" +
-            "      \"pattern\": {\n" +
-            "        \"token\": [\n" +
-            "          \"wont<exception scope=\\\"previous\\\" postag=\\\"PRP$\\\"/>\",\n" +
-            "          \"<exception>to</exception>\"\n" +
-            "        ]\n" +
-            "      },\n" +
-            "      \"message\": [\n" +
-            "        \"Please make sure you mean 'won't' (a habit)\",\n" +
-            "        \"not <suggestion>won't</suggestion>/<suggestion>won’t</suggestion>(short for 'will not')?\"\n" +
-            "      ],\n" +
-            "      \"example\": [\n" +
-            "        \"No, I <marker>won't</marker> do that.\",\n" +
-            "        \"We were wont to meet at that pleasant spot\",\n" +
-            "        \"As is his wont, Tourneur shows us only parts of the set, in logical sequence, each at the moment when, and not before, we need to see it.\"\n" +
-            "      ]\n" +
-            "    }\n" +
-            "  }\n" +
-            "}");*/
-        grammarCorrectionManagement.correctData("im workin");
-        Assert.assertEquals(true, true);
+        return summarizeResult;
     }
 
 }
