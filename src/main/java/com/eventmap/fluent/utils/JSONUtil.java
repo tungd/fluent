@@ -37,4 +37,12 @@ public class JSONUtil {
 
         return summarizeResult;
     }
+
+    public ResultHub readJSONfromResultFile() throws Exception{
+        ObjectMapper mapper = new ObjectMapper();
+         // Convert JSON string from file to Object
+        ResultHub result = mapper.readValue(new File(StaticStrings.JSON_PATH), ResultHub.class);
+        return result;
+
+    }
 }

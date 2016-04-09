@@ -1,5 +1,6 @@
 package com.eventmap.fluent.controller;
 
+import com.eventmap.fluent.domain.ResultHub;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
@@ -54,7 +55,7 @@ public class FluentMainController {
             throw new FluentException();
         }
     }
-    
+
     @RequestMapping(value="synonym", method = RequestMethod.POST)
     public void synonymCheck(@RequestParam String text) {
     	 synonymManagement.suggestWordProcess(text);
@@ -74,6 +75,16 @@ public class FluentMainController {
     @ResponseBody
     public SummarizeResult getSummarize(@RequestBody String finalResult){
         return grammarCorrectionManagement.getSummarize(finalResult);
+    }
+
+    @RequestMapping(value = "getResult")
+    @ResponseBody
+    public ResultHub getResult(){
+        try {
+            return grammarCorrectionManagement.getResult();
+        }catch(Exception e){
+            throw new FluentException();
+        }
     }
 
 }

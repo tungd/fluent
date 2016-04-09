@@ -3,6 +3,7 @@ package com.eventmap.fluent.manager;
 import com.eventmap.fluent.domain.Match;
 import com.eventmap.fluent.domain.Matches;
 
+import com.eventmap.fluent.domain.ResultHub;
 import com.eventmap.fluent.domain.SummarizeResult;
 import com.eventmap.fluent.domain.json.Rules;
 
@@ -86,4 +87,8 @@ public class GrammarCorrectionManagement {
         return summarizeResult;
     }
 
+    public ResultHub getResult() throws Exception{
+        JSONUtil jsonUtil = new JSONUtil();
+        return jsonUtil.readJSONfromResultFile();
+    }
 }
