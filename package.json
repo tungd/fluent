@@ -27,7 +27,6 @@
     "meyda": "^3.1.0",
     "rc-queue-anim": "^0.11.9",
     "react": "^15.0.1",
-    "react-addons-css-transition-group": "^15.0.1",
     "react-dom": "^15.0.1"
   },
   "scripts": {

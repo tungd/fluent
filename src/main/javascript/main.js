@@ -6,7 +6,7 @@ import Analyzer from './analyzer';
 import ToolBar  from './toolbar';
 
 const isMobile = true
-        // /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+// /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
 class App extends Component {
 
@@ -43,10 +43,12 @@ class App extends Component {
         <h1 className="header">Fluent</h1>
         <Analyzer recorder={this.recorder}/>
         <ToolBar
-           recorder={this.recorder}
-           onClick={this.toggleRecording.bind(this)}/>
+          recorder={this.recorder}
+          recording={this.state.recording}
+          onClick={this.toggleRecording.bind(this)}
+          isMobile={isMobile}/>
       </div>
-    )
+    );
   }
 }
 

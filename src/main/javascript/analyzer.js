@@ -1,6 +1,4 @@
-
 import React, { Component } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import QueueAnim from 'rc-queue-anim'
 
 import Word from './word';
@@ -12,7 +10,7 @@ const mock = [
   // { text: 'meet', duration: 10, final: true },
   // { text: 'you', duration: 10, final: true },
   // { text: 'all', duration: 10, final: false },
-]
+];
 
 export default class Analyzer extends Component {
 
@@ -20,7 +18,7 @@ export default class Analyzer extends Component {
     super(props);
 
     // this.state = { words: [] };
-    this.state = { words: mock }
+    this.state = { words: mock };
 
     this.props.recorder.onUpdate = words => this.setState({ words })
   }
