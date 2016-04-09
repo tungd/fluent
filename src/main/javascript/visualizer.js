@@ -14,8 +14,6 @@ export default class Visualizer extends Component {
     }
 
     const canvas = this.refs.canvas;
-    canvas.style.width = '100%';
-    canvas.width = canvas.offsetWidth;
 
     let { recorder } = this.props,
         width = canvas.width,
@@ -32,14 +30,26 @@ export default class Visualizer extends Component {
         graphic.restore();
       }
 
-      y = height / 2 - recorder.analyze("energy") * 4;
-      if (x === 0) {
-        graphic.beginPath();
-        graphic.moveTo(x, y);
-      } else {
-        graphic.lineTo(x, y);
+      // y = height / 2 - recorder.analyze("energy") * 1.5;
+      // if (x === 0) {
+      //   graphic.beginPath();
+      //   graphic.moveTo(x, y);
+      // } else {
+      //   graphic.lineTo(x, y);
+      // }
+      // x += 1;
+      var i, v, buffer = recorder.buffer, slice = width * 1.0 / buffer.length
+
+      for (i = 0; i < buffer.length; i += 1, x += slice) {
+        v = buffer[i] / 128.0
+        y = v * height / 2
+
+        if (i === 0) {
+          graphic.moveTo(x, y)
+        } else {
+          graphic.lineTo(x, y)
+        }
       }
-      x += 1;
 
       graphic.strokeStyle = '#000';
       graphic.strokeWidth = 2;
@@ -55,6 +65,6 @@ export default class Visualizer extends Component {
   }
 
   render() {
-    return <canvas ref="canvas"></canvas>
+    return <canvas className="visualizer" ref="canvas"></canvas>
   }
 }

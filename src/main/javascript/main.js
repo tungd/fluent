@@ -40,6 +40,7 @@ class App extends Component {
   render() {
     return (
       <div className="app">
+        <h1 className="header">Fluent</h1>
         <Analyzer recorder={this.recorder}/>
         <ToolBar
            recorder={this.recorder}
