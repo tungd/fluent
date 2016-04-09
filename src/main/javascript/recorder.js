@@ -31,22 +31,22 @@ export default class Recorder {
 
     this.recognition.start();
 
-    // getUserMedia({ audio: true }, stream => {
-    //   if (!this.source) {
-    //     this.source = this.audio.createMediaStreamSource(stream);
-    //     this.source.connect(this.analyzer);
+    getUserMedia({ audio: true }, stream => {
+      if (!this.source) {
+        this.source = this.audio.createMediaStreamSource(stream);
+        this.source.connect(this.analyzer);
 
-    //     this.meyda = Meyda.createMeydaAnalyzer({
-    //       audioContext: this.audio,
-    //       source: this.source,
-    //       bufferSize: this.bufferSize,
-    //       featureExtractors: this.features
-    //     });
+        this.meyda = Meyda.createMeydaAnalyzer({
+          audioContext: this.audio,
+          source: this.source,
+          bufferSize: this.bufferSize,
+          featureExtractors: this.features
+        });
 
-    //     this.meyda.start();
-    //     this.recognition.start();
-    //   }
-    // }, console.error.bind(console));
+        this.meyda.start();
+        // this.recognition.start();
+      }
+    }, console.error.bind(console));
   }
 
   stop() {
