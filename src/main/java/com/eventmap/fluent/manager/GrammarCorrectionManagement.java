@@ -39,33 +39,26 @@ public class GrammarCorrectionManagement {
 
     private JLanguageTool jLanguageTool;
 
-    public Matches correctData(String inputString){
+    public Matches correctData(String inputString) throws Exception{
         // uppercase first character of inputString
         inputString = inputString.toUpperCase().charAt(0) +  inputString.substring(1);
 
         Matches matches = new Matches();
         jLanguageTool = new JLanguageTool(new BritishEnglish());
 
-        try {
-            loadCustomRules();
+        loadCustomRules();
+        List<RuleMatch> lsRuleMatch = jLanguageTool.check(inputString);
+        List<Match> lsMatch = new ArrayList<Match>();
 
-            List<RuleMatch> lsRuleMatch = jLanguageTool.check(inputString);
-            List<Match> lsMatch = new ArrayList<Match>();
-
-            for (RuleMatch ruleMatch : lsRuleMatch) {
-                Match match = new Match();
-                match.setMessages(ruleMatch.getMessage());
-                match.setCorrection(ruleMatch.getSuggestedReplacements());
-                match.setPosition(String.valueOf(ruleMatch.getColumn()));
-                lsMatch.add(match);
-            }
-
-            matches.setMatches(lsMatch);
-        }catch(IOException e){
-            e.printStackTrace();
-        }catch(Exception e){
-            e.printStackTrace();
+        for (RuleMatch ruleMatch : lsRuleMatch) {
+            Match match = new Match();
+            match.setMessages(ruleMatch.getMessage());
+            match.setCorrection(ruleMatch.getSuggestedReplacements());
+            match.setPosition(String.valueOf(ruleMatch.getColumn()));
+            lsMatch.add(match);
         }
+        matches.setMatches(lsMatch);
+
         return matches;
     }
 
@@ -78,26 +71,18 @@ public class GrammarCorrectionManagement {
         }
     }
 
-    public String addRule(String inputString){
+    public String addRule(String inputString) throws Exception{
 
-        try {
-            Rules inputRule = JSONUtil.marshallRules(inputString);
-
-            XMLUtil xmlUtil = new XMLUtil();
-            String result = xmlUtil.readXMLRuleFile();
-
-            xmlUtil.write2XMLRuleFile(result, inputRule);
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        Rules inputRule = JSONUtil.marshallRules(inputString);
+        XMLUtil xmlUtil = new XMLUtil();
+        String result = xmlUtil.readXMLRuleFile();
+        xmlUtil.checkForUpdateNewRule(result, inputRule);
 
         return "Your rule is successfully added to library";
     }
 
     public SummarizeResult getSummarize(String finalResult){
         SummarizeResult summarizeResult = new SummarizeResult();
-
         return summarizeResult;
     }
 

@@ -2,6 +2,7 @@ package com.eventmap.fluent.controller;
 
 import com.eventmap.fluent.domain.Matches;
 import com.eventmap.fluent.domain.SummarizeResult;
+import com.eventmap.fluent.exception.FluentException;
 import com.eventmap.fluent.manager.GrammarCorrectionManagement;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +34,21 @@ public class FluentMainController {
     @RequestMapping(value = "correction"/*, method = RequestMethod.POST*/)
     @ResponseBody
     public Matches grammarCheck(@RequestParam String sentence){
-        return grammarCorrectionManagement.correctData(sentence);
+        try {
+            return grammarCorrectionManagement.correctData(sentence);
+        }catch (Exception e){
+            throw new FluentException();
+        }
     }
 
     @RequestMapping(value = "addition", method = RequestMethod.POST)
     @ResponseBody
     public String addRule(@RequestBody String ruleContent) {
-        return grammarCorrectionManagement.addRule(ruleContent);
+        try {
+            return grammarCorrectionManagement.addRule(ruleContent);
+        }catch(Exception e){
+            throw new FluentException();
+        }
     }
 
     @RequestMapping(value = "summarize", method = RequestMethod.POST)
@@ -48,14 +57,4 @@ public class FluentMainController {
         return grammarCorrectionManagement.getSummarize(finalResult);
     }
 
-    @ResponseStatus(value= HttpStatus.INTERNAL_SERVER_ERROR, reason="Network")
-    @ExceptionHandler(Exception.class)
-    public ModelAndView handleError(HttpServletRequest req, Exception exception) {
-        logger.error("Request: " + req.getRequestURL() + " raised " + exception);
-
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("messages", "Troubles");
-        mav.setViewName("error");
-        return mav;
-    }
 }
