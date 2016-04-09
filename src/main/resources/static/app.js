@@ -20328,7 +20328,7 @@ var App = function (_Component) {
       return _react2.default.createElement(
         'h1',
         null,
-        'Hello, World'
+        'Hello, World!!!'
       );
     }
   }]);
@@ -20336,10 +20336,8 @@ var App = function (_Component) {
   return App;
 }(_react.Component);
 
-_reactDom2.default.renderElement(_react2.default.createElement(App, null), document.getElementById('app'));
-
-console.log("Hello, World");
+_reactDom2.default.render(_react2.default.createElement(App, null), document.getElementById('app'));
 });
 
-;
+
 //# sourceMappingURL=app.js.map
