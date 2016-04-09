@@ -20,6 +20,9 @@ module.exports = {
       modules: false
     }
   },
+  server: {
+    hostname: '0.0.0.0'
+  },
   npm: {
     enabled: true,
     whitelist: ['whatwg-fetch', 'react', 'react-dom', 'lodash']
