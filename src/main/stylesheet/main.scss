@@ -1,34 +1,15 @@
-html {
-  body {
-    .analyzer {
-      min-height: 450px;
-    }
+#app {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 
-    .word {
-      color: #ddd;
-      display: inline-block;
-      font-size: 2em;
-      margin: 8px 12px;
-      border-bottom: 3px solid #9BC53D;
-      transition: color 0.3s ease-in;
-    }
-
-    .word.suggestion {
-      border-bottom-color: #FDE74C;
-    }
-
-    .word.error {
-      border-bottom-color: #E55934;
-    }
-
-    .word.final {
-      color: #666;
-    }
-
-    .btn-lg {
-      font-size: 2.5em;
-    }
-  }
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .header {
@@ -37,12 +18,14 @@ html {
   font-size: 24px;
   background: #5BC0EB;
   color: #fff;
+  flex-shrink: 0;
 }
 
 .toolbar {
   display: flex;
   padding: 10px;
   background: #5BC0EB;
+  flex-shrink: 0;
 }
 
 .visualizer {
@@ -74,4 +57,34 @@ html {
 .updateWords-leave.updateWords-leave-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in;
+}
+
+.analyzer {
+  flex-grow: 1;
+  overflow-y: scroll;
+}
+
+.word {
+  color: #ddd;
+  display: inline-block;
+  font-size: 2em;
+  margin: 8px 12px;
+  border-bottom: 3px solid #9BC53D;
+  transition: color 0.3s ease-in;
+}
+
+.word.suggestion {
+  border-bottom-color: #FDE74C;
+}
+
+.word.error {
+  border-bottom-color: #E55934;
+}
+
+.word.final {
+  color: #666;
+}
+
+.btn-lg {
+  font-size: 2.5em;
 }
