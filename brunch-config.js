@@ -4,16 +4,11 @@ module.exports = {
     stylesheets: {joinTo: 'app.css'},
     templates: {joinTo: 'app.js'}
   },
-  modules: {
-    autoRequire: {
-      "js/app.js": ["whatwg-fetch"]
-    }
-  },
   paths: {
     watched: [
       "src/main/javascript"
     ],
-    public: "src/main/resources/static"
+    public: "src/main/resources/static/"
   },
   plugins: {
     babel: {
