@@ -12,7 +12,7 @@ import java.io.File;
  */
 public class XMLUtil {
 
-    public static Rules UnMarshalRulesFile() throws JAXBException{
+    public  static Rules unMarshalRulesFile() throws JAXBException{
         Rules rules;
 
         File file = new File(StaticStrings.RULES_PATH);
@@ -21,6 +21,16 @@ public class XMLUtil {
         rules = (Rules) jaxbUnmarshaller.unmarshal(file);
 
         return rules;
+    }
+
+    public void writeToFile(){
+        try {
+            Rules rules = unMarshalRulesFile();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
 
 }
