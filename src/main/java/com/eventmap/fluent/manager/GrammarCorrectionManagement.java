@@ -2,8 +2,8 @@ package com.eventmap.fluent.manager;
 
 import com.eventmap.fluent.domain.Match;
 import com.eventmap.fluent.domain.Matches;
+import com.eventmap.fluent.utils.XMLUtil;
 import org.apache.log4j.Logger;
-import org.apache.log4j.net.SyslogAppender;
 import org.jetbrains.annotations.TestOnly;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,13 +32,18 @@ public class GrammarCorrectionManagement {
 
     private static final Logger logger = Logger.getLogger(GrammarCorrectionManagement.class);
 
+    private JLanguageTool jLanguageTool;
+
     public Matches correctData(String inputString){
         // uppercase first character of inputString
         inputString = inputString.toUpperCase().charAt(0) +  inputString.substring(1);
 
         Matches matches = new Matches();
-        JLanguageTool jLanguageTool = new JLanguageTool(new BritishEnglish());
+        jLanguageTool = new JLanguageTool(new BritishEnglish());
+
         try {
+            loadCustomRules();
+
             List<RuleMatch> lsRuleMatch = jLanguageTool.check(inputString);
             List<Match> lsMatch = new ArrayList<Match>();
 
@@ -51,31 +56,35 @@ public class GrammarCorrectionManagement {
             }
 
             matches.setMatches(lsMatch);
+        }catch(IOException e){
+            e.printStackTrace();
         }catch(Exception e){
             e.printStackTrace();
         }
         return matches;
     }
 
-    public void addRule(){
-
-        JLanguageTool jLanguageTool = new JLanguageTool(new BritishEnglish());
-        try {
-            ClassLoader classLoader = getClass().getClassLoader();
-            List<AbstractPatternRule> lsApbstractPatternRule = jLanguageTool.loadPatternRules("/Users/huytran/Documents/workspace/fluent/src/main/resources/grammar.xml");
-            for (AbstractPatternRule patternRule : lsApbstractPatternRule) {
-                    patternRule.setDefaultOn();
-                jLanguageTool.addRule(patternRule);
-            }
-            List<Rule> lsRule = jLanguageTool.getAllRules();
-            for (Rule rule : lsRule){
-                if (rule.getId().equals("ABC")){
-                    System.out.print("abc");
-                }
-            }
-        }catch(Exception e){
-
+    private void loadCustomRules() throws  IOException{
+        ClassLoader classLoader = getClass().getClassLoader();
+        List<AbstractPatternRule> lsApbstractPatternRule = jLanguageTool.loadPatternRules("/Users/huytran/Documents/workspace/fluent/src/main/resources/grammar.xml");
+        for (AbstractPatternRule patternRule : lsApbstractPatternRule) {
+            patternRule.setDefaultOn();
+            jLanguageTool.addRule(patternRule);
         }
+    }
+
+    public String addRule(){
+        String abc = "";
+
+        XMLUtil xmlUtil = new XMLUtil();
+
+        return "Your rule is successfully added to library";
+//        if (xmlUtil!= null){
+//            return "Your rule is succesfully added to library";
+//        }else{
+//            return "Trouble";
+//        }
+
     }
 
     @Test

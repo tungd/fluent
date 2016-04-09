@@ -25,4 +25,9 @@ public class FluentMainController {
         return grammarCorrectionManagement.correctData(sentence);
     }
 
+    @RequestMapping(value = "addition", method = RequestMethod.POST)
+    @ResponseBody
+    public String addRule(@RequestBody String ruleContent){
+        return grammarCorrectionManagement.addRule();
+    }
 }
