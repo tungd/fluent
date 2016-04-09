@@ -1,15 +1,15 @@
+import Meyda from 'meyda';
+
 let getUserMedia = (navigator.getUserMedia ||
                     navigator.webkitGetUserMedia ||
                     navigator.mozGetUserMedia ||
                     navigator.msGetUserMedia).bind(navigator);
 
-import Meyda from 'meyda';
-
-
 export default class Recorder {
 
   constructor(audio, recognition, enableAnalyze = false, bufferSize = 2048, features = ["rms", "energy"]) {
     this.started = false;
+    this.end = false;
     this.audio = audio;
 
     if (enableAnalyze) {
@@ -20,6 +20,7 @@ export default class Recorder {
 
     this.recognition = this._configureRecognition(recognition);
     this.words = [];
+    this.sentence = 0;
   }
 
   start() {
@@ -49,13 +50,19 @@ export default class Recorder {
       }, console.error.bind(console));
     } else {
       this.recognition.start();
+
+
     }
   }
 
   stop() {
-    this.meyda.stop();
-    this.recognition.stop();
+    if (this.meyda) {
+      this.meyda.stop();
+    }
+
     this.started = false;
+    this.end = true;
+    this.recognition.stop();
   }
 
   analyze(feature) {
@@ -79,13 +86,19 @@ export default class Recorder {
   }
 
   _configureRecognition(recognition) {
-    recognition.continuous = true;
+    // recognition.continuous = true;
     recognition.interimResults = true;
-    console.log(recognition.lang);
-    recognition.lang = 'en';
+    recognition.lang = 'en-US';
 
     recognition.onstart = _ => console.log("Started!");
-    recognition.onend = _ => console.log('End');
+    recognition.onend = _ => {
+      console.log('End');
+
+      if (!this.end) {
+        this.sentence += 1;
+        recognition.start();
+      }
+    };
     recognition.onerror = e => console.error(e);
 
     recognition.onresult = this._handleResult.bind(this);
@@ -94,38 +107,33 @@ export default class Recorder {
   }
 
   _handleResult(e) {
-    let i, word, text = '', partial = '';
+    console.log(this.words);
+    let text = '';
 
-    for (i = e.resultIndex; i < e.results.length; i += 1) {
-      word = e.results[i][0].transcript;
+    if (!this.words[this.sentence]) {
+      this.words[this.sentence] = [];
 
-      if (e.results[i].isFinal) {
-        text += word;
-        console.log("Text:", text);
-        this.end = true;
-      } else {
-        partial += word;
-        console.log("Partial:", partial);
+      if (this.words[this.sentence - 1]) {
+        this.words[this.sentence - 1].forEach(w => w.final = true);
       }
     }
 
-    if (text) {
-      this._updateWords(text.split(' '));
-    } else if (partial) {
-      this._updateWords(partial.split(' '));
-    }
-  }
+    text = e.results[e.resultIndex][0].transcript;
 
-  _updateWords(words) {
-    words.forEach((word, i) => {
-      if (i < this.words.length) {
-        this.words[i].text = word;
-        this.words[i].final = true;
+    text.split(' ').forEach((word, i) => {
+      if (this.words[this.sentence][i]) {
+        if (this.words[this.sentence][i].text == word) {
+          this.words[this.sentence][i].final = true
+        } else {
+          this.words[this.sentence][i].text = word
+        }
       } else {
-        this.words.push({ text: word, final: false });
+        this.words[this.sentence].push({ text: word, final: false })
       }
     });
 
-    console.log(this.words.map(w => w.text))
+    if (this.onUpdate) {
+      this.onUpdate(this.words);
+    }
   }
 }
