@@ -2,4 +2,5 @@
 *.iml
 node_modules/
 target/
-src/main/resources/static/
+src/main/resources/static/app.js
+src/main/resources/static/app.js.map
