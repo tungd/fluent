@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import QueueAnim from 'rc-queue-anim'
 
 import Word from './word';
 
@@ -30,7 +31,12 @@ export default class Analyzer extends Component {
 
   renderSentence(words, i) {
     return (
-      <div key={i}>{words.map(this.renderWord)}.</div>
+      <span key={i}>
+        <QueueAnim animConfig={{opacity: [1, 1]}} interval={350} duration={0}>
+          {words.map(this.renderWord)}
+        </QueueAnim>
+        .
+      </span>
     )
   }
 

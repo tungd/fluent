@@ -54,10 +54,10 @@ export default class Visualizer extends Component {
       graphic.strokeStyle = '#000';
       graphic.strokeWidth = 2;
       graphic.stroke();
-      requestAnimationFrame(draw);
+      // requestAnimationFrame(draw);
     }
 
-    draw();
+    // draw();
   }
 
   shouldComponentUpdate() {

@@ -1,13 +1,17 @@
-import React from 'react';
 
-export default (props) => {
-  let classes = ["word"]
+import React, { Component } from 'react';
 
-  if (props.final) {
-    classes.push("final")
+export default class Word extends Component {
+
+  render() {
+    let classes = ["word"]
+
+    if (this.props.final) {
+      classes.push("final")
+    }
+
+    return (
+      <div className={classes.join(' ')}>{this.props.text}</div>
+    )
   }
-
-  return (
-    <div className={classes.join(' ')}>{props.text}</div>
-  )
 }

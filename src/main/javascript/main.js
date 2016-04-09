@@ -5,8 +5,8 @@ import Recorder from './recorder';
 import Analyzer from './analyzer';
 import ToolBar  from './toolbar';
 
-const isMobile =
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+const isMobile = true
+        // /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
 class App extends Component {
 
