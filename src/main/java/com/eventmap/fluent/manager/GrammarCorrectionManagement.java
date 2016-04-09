@@ -4,11 +4,10 @@ import com.eventmap.fluent.domain.Match;
 import com.eventmap.fluent.domain.Matches;
 
 import com.eventmap.fluent.domain.json.Rules;
-import com.eventmap.fluent.domain.json.Rule;
+
 import com.eventmap.fluent.utils.JSONUtil;
 import com.eventmap.fluent.utils.StaticStrings;
 import com.eventmap.fluent.utils.XMLUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,16 +15,12 @@ import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
 import org.languagetool.rules.RuleMatch;
 import org.languagetool.rules.patterns.AbstractPatternRule;
-import org.languagetool.tools.RuleMatchAsXmlSerializer;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Component;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.Exception;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,42 +81,12 @@ public class GrammarCorrectionManagement {
         try {
             Rules inputRule = JSONUtil.marshallRules(inputString);
 
-            StringBuilder result = new StringBuilder("");
+            XMLUtil xmlUtil = new XMLUtil();
+            String result = xmlUtil.readXMLRuleFile();
 
-            //Get file from resources folder
-            ClassLoader classLoader = getClass().getClassLoader();
-            File file = new File(classLoader.getResource("grammar.xml").getFile());
+            xmlUtil.write2XMLRuleFile(result, inputRule);
 
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                result.append(line).append("\n");
-            }
-            scanner.close();
-            String newString = "";
-            if (result.toString().contains("category id=\"User\"")){
-                newString = result.substring(0, result.indexOf("</category>"));
-                newString += "<rule id=\"" + inputRule.getCategory().getRule().getId() + "\" name = \"" + inputRule.getCategory().getRule().getName()+ "\">" + "\n";
-                newString += "<pattern>" + "\n";
-                for (String token : inputRule.getCategory().getRule().getPattern().getToken()){
-                    newString += "<token>" + token + "</token>" + "\n";
-                }
-                newString += "</pattern>" + "\n";
-                newString += "<message>" + inputRule.getCategory().getRule().getMessage() +"</message>" + "\n";
-                for (String message : inputRule.getCategory().getRule().getMessage()) {
-
-                    newString += "<message>" + message+ "</message>" + "\n";
-                }
-                for (String example: inputRule.getCategory().getRule().getExample()){
-
-                    newString += "<example>" + example + "</example>" + "\n";
-                }
-                newString += "</rule>" + "\n";
-                newString += "</category>" + "\n";
-
-            }
-
-        }catch(java.lang.Exception e){
+        }catch(Exception e){
             e.printStackTrace();
         }
 
