@@ -10,6 +10,7 @@ html {
       font-size: 2em;
       margin: 8px 12px;
       border-bottom: 3px solid #9BC53D;
+      transition: all 1s ease-in-out;
     }
 
     .word.suggestion {
@@ -55,4 +56,22 @@ html {
   margin-right: 10px;
   background: #E55934;
   border-radius: 50%;
+}
+
+.updateWords-enter {
+  opacity: 0.01;
+}
+
+.updateWords-enter.updateWords-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.updateWords-leave {
+  opacity: 1;
+}
+
+.updateWords-leave.updateWords-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
 }
