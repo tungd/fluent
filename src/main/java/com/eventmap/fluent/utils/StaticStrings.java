@@ -5,4 +5,5 @@ package com.eventmap.fluent.utils;
  */
 public class StaticStrings {
     public static final String RULES_PATH = "./src/main/resources/grammar.xml";
+    public static final String JSON_PATH = "./src/main/resources/total_result.json";
 }

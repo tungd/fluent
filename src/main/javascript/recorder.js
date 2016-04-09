@@ -1,10 +1,9 @@
+import Meyda from 'meyda';
+
 let getUserMedia = (navigator.getUserMedia ||
                     navigator.webkitGetUserMedia ||
                     navigator.mozGetUserMedia ||
                     navigator.msGetUserMedia).bind(navigator);
-
-import Meyda from 'meyda';
-
 
 export default class Recorder {
 
@@ -99,7 +98,7 @@ export default class Recorder {
         this.sentence += 1;
         recognition.start();
       }
-    }
+    };
     recognition.onerror = e => console.error(e);
 
     recognition.onresult = this._handleResult.bind(this);
@@ -108,18 +107,18 @@ export default class Recorder {
   }
 
   _handleResult(e) {
-    console.log(this.words)
-    let i, j, word, text = '', partial = '';
+    console.log(this.words);
+    let text = '';
 
     if (!this.words[this.sentence]) {
-      this.words[this.sentence] = []
+      this.words[this.sentence] = [];
 
       if (this.words[this.sentence - 1]) {
-        this.words[this.sentence - 1].forEach(w => w.final = true)
+        this.words[this.sentence - 1].forEach(w => w.final = true);
       }
     }
 
-    text = e.results[e.resultIndex][0].transcript
+    text = e.results[e.resultIndex][0].transcript;
 
     text.split(' ').forEach((word, i) => {
       if (this.words[this.sentence][i]) {
@@ -131,10 +130,10 @@ export default class Recorder {
       } else {
         this.words[this.sentence].push({ text: word, final: false })
       }
-    })
+    });
 
     if (this.onUpdate) {
-      this.onUpdate(this.words)
+      this.onUpdate(this.words);
     }
   }
 }

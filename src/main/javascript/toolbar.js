@@ -2,13 +2,13 @@ import React from 'react';
 
 import Visualizer from './visualizer';
 
-var renderVisualizer = (props) => {
+const renderVisualizer = (props) => {
   if (props.isMobile) {
-    return null
+    return null;
   }
 
   return <Visualizer recorder={props.recorder}/>
-}
+};
 
 export default (props) => {
   return (

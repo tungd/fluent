@@ -2,15 +2,20 @@ package com.eventmap.fluent.manager;
 
 import com.eventmap.fluent.domain.Match;
 import com.eventmap.fluent.domain.Matches;
+
+import com.eventmap.fluent.domain.ResultHub;
+import com.eventmap.fluent.domain.SummarizeResult;
+import com.eventmap.fluent.domain.json.Rules;
+
+import com.eventmap.fluent.exception.FluentException;
+import com.eventmap.fluent.utils.JSONUtil;
+import com.eventmap.fluent.utils.StaticStrings;
 import com.eventmap.fluent.utils.XMLUtil;
 import org.apache.log4j.Logger;
-import org.jetbrains.annotations.TestOnly;
 import org.junit.Assert;
 import org.junit.Test;
-import org.languagetool.AnalyzedSentence;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
-import org.languagetool.rules.Rule;
 import org.languagetool.rules.RuleMatch;
 import org.languagetool.rules.patterns.AbstractPatternRule;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -18,10 +23,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.PrintWriter;
+import java.lang.Exception;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Created by huytran on 4/9/16.
@@ -34,64 +40,55 @@ public class GrammarCorrectionManagement {
 
     private JLanguageTool jLanguageTool;
 
-    public Matches correctData(String inputString){
+    public Matches correctData(String inputString) throws Exception{
         // uppercase first character of inputString
         inputString = inputString.toUpperCase().charAt(0) +  inputString.substring(1);
 
         Matches matches = new Matches();
         jLanguageTool = new JLanguageTool(new BritishEnglish());
 
-        try {
-            loadCustomRules();
+        loadCustomRules();
+        List<RuleMatch> lsRuleMatch = jLanguageTool.check(inputString);
+        List<Match> lsMatch = new ArrayList<Match>();
 
-            List<RuleMatch> lsRuleMatch = jLanguageTool.check(inputString);
-            List<Match> lsMatch = new ArrayList<Match>();
-
-            for (RuleMatch ruleMatch : lsRuleMatch) {
-                Match match = new Match();
-                match.setMessages(ruleMatch.getMessage());
-                match.setCorrection(ruleMatch.getSuggestedReplacements());
-                match.setPosition(String.valueOf(ruleMatch.getColumn()));
-                lsMatch.add(match);
-            }
-
-            matches.setMatches(lsMatch);
-        }catch(IOException e){
-            e.printStackTrace();
-        }catch(Exception e){
-            e.printStackTrace();
+        for (RuleMatch ruleMatch : lsRuleMatch) {
+            Match match = new Match();
+            match.setMessages(ruleMatch.getMessage());
+            match.setCorrection(ruleMatch.getSuggestedReplacements());
+            match.setPosition(String.valueOf(ruleMatch.getColumn()));
+            lsMatch.add(match);
         }
+        matches.setMatches(lsMatch);
+
         return matches;
     }
 
-    private void loadCustomRules() throws  IOException{
-        ClassLoader classLoader = getClass().getClassLoader();
-        List<AbstractPatternRule> lsApbstractPatternRule = jLanguageTool.loadPatternRules("/Users/huytran/Documents/workspace/fluent/src/main/resources/grammar.xml");
+    private void loadCustomRules() throws IOException{
+
+        List<AbstractPatternRule> lsApbstractPatternRule = jLanguageTool.loadPatternRules(StaticStrings.RULES_PATH);
         for (AbstractPatternRule patternRule : lsApbstractPatternRule) {
             patternRule.setDefaultOn();
             jLanguageTool.addRule(patternRule);
         }
     }
 
-    public String addRule(){
-        String abc = "";
+    public String addRule(String inputString) throws Exception{
 
+        Rules inputRule = JSONUtil.marshallRules(inputString);
         XMLUtil xmlUtil = new XMLUtil();
+        String result = xmlUtil.readXMLRuleFile();
+        xmlUtil.checkForUpdateNewRule(result, inputRule);
 
         return "Your rule is successfully added to library";
-//        if (xmlUtil!= null){
-//            return "Your rule is succesfully added to library";
-//        }else{
-//            return "Trouble";
-//        }
-
     }
 
-    @Test
-    public void abc(){
-        GrammarCorrectionManagement grammarCorrectionManagement = new GrammarCorrectionManagement();
-        grammarCorrectionManagement.addRule();
-        Assert.assertEquals(true, true);
+    public SummarizeResult getSummarize(String finalResult){
+        SummarizeResult summarizeResult = new SummarizeResult();
+        return summarizeResult;
     }
 
+    public ResultHub getResult() throws Exception{
+        JSONUtil jsonUtil = new JSONUtil();
+        return jsonUtil.readJSONfromResultFile();
+    }
 }
