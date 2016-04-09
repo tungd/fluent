@@ -5,6 +5,9 @@ import Recorder from './recorder';
 import Analyzer from './analyzer';
 import ToolBar  from './toolbar';
 
+const isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+
 class App extends Component {
 
   constructor(props) {
@@ -14,7 +17,9 @@ class App extends Component {
     this.recorder = new Recorder(
       new (window.AudioContext || window.webkitAudioContext)(),
       new (window.SpeechRecognition || window.webkitSpeechRecognition)(),
-      2048);
+      !isMobile,
+      2048
+    );
 
     this.state = {
       recording: false
@@ -34,13 +39,11 @@ class App extends Component {
 
   render() {
     return (
-      <div className="container">
-        <div className="well">
-          <Analyzer recorder={this.recorder}/>
-          <ToolBar
-            recorder={this.recorder}
-            onClick={this.toggleRecording.bind(this)}/>
-        </div>
+      <div className="app">
+        <Analyzer recorder={this.recorder}/>
+        <ToolBar
+           recorder={this.recorder}
+           onClick={this.toggleRecording.bind(this)}/>
       </div>
     )
   }
