@@ -9,6 +9,4 @@ class App extends Component {
   }
 }
 
-ReactDOM.renderElement(<App />, document.getElementById('app'))
-
-console.log("Hello, World")
+ReactDOM.render(<App />, document.getElementById('app'))
