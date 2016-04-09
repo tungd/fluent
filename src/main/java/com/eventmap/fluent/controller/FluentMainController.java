@@ -1,5 +1,17 @@
 package com.eventmap.fluent.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.eventmap.fluent.domain.Matches;
+import com.eventmap.fluent.manager.GrammarCorrectionManagement;
+import com.eventmap.fluent.manager.SynonymSuggestionManager;
 import com.eventmap.fluent.domain.Matches;
 import com.eventmap.fluent.domain.SummarizeResult;
 import com.eventmap.fluent.exception.FluentException;
@@ -28,6 +40,8 @@ public class FluentMainController {
 
     @Autowired
     GrammarCorrectionManagement grammarCorrectionManagement;
+    @Autowired
+    SynonymSuggestionManager synonymManagement;
 
     static final Logger logger = Logger.getLogger(FluentMainController.class);
 
@@ -39,6 +53,11 @@ public class FluentMainController {
         }catch (Exception e){
             throw new FluentException();
         }
+    }
+    
+    @RequestMapping(value="synonym", method = RequestMethod.POST)
+    public void synonymCheck(@RequestParam String text) {
+    	 synonymManagement.suggestWordProcess(text);
     }
 
     @RequestMapping(value = "addition", method = RequestMethod.POST)
