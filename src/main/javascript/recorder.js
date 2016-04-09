@@ -1,76 +1,76 @@
-
 let getUserMedia = (navigator.getUserMedia ||
                     navigator.webkitGetUserMedia ||
                     navigator.mozGetUserMedia ||
-                    navigator.msGetUserMedia).bind(navigator)
+                    navigator.msGetUserMedia).bind(navigator);
 
-import Meyda from 'meyda'
+import Meyda from 'meyda';
 
 
 export default class Recorder {
 
   constructor(audio, recognition, bufferSize = 2048, features = ["rms", "energy"]) {
-    this.started = false
-    this.audio = audio
+    this.started = false;
+    this.audio = audio;
 
-    this.buffer = new Uint8Array(bufferSize)
-    this.analyzer = this._createAnalyzer(audio, bufferSize)
+    this.buffer = new Uint8Array(bufferSize);
+    this.features = features;
+    this.analyzer = this._createAnalyzer(audio, bufferSize);
 
-    this.recognition = this._configureRecognition(recognition)
-    this.words = []
+    this.recognition = this._configureRecognition(recognition);
+    this.words = [];
   }
 
   start() {
-    console.log("Started!")
+    console.log("Started!");
     if (this.started) {
-      return
+      return;
     }
 
-    this.started = true
-    this.words = []
+    this.started = true;
+    this.words = [];
 
     getUserMedia({ audio: true }, stream => {
       if (!this.source) {
-        this.source = this.audio.createMediaStreamSource(stream)
-        this.source.connect(this.analyzer)
+        this.source = this.audio.createMediaStreamSource(stream);
+        this.source.connect(this.analyzer);
 
         this.meyda = Meyda.createMeydaAnalyzer({
           audioContext: this.audio,
           source: this.source,
           bufferSize: this.bufferSize,
           featureExtractors: this.features
-        })
+        });
 
-        this.meyda.start()
-        this.recognition.start()
+        this.meyda.start();
+        this.recognition.start();
       }
-    }, console.error.bind(console))
+    }, console.error.bind(console));
   }
 
   stop() {
-    this.meyda.stop()
-    this.recognition.stop()
-    this.started = false
+    this.meyda.stop();
+    this.recognition.stop();
+    this.started = false;
   }
 
   analyze(feature) {
     if (!this.meyda) {
       // throw new Error("Recorder is not started.")
-      return 0
+      return 0;
     }
 
-    return this.meyda.get(feature)
+    return this.meyda.get(feature);
   }
 
   _createAnalyzer(audio, bufferSize) {
-    let analyzer = audio.createAnalyser()
+    let analyzer = audio.createAnalyser();
 
-    analyzer.fftSize = bufferSize
-    analyzer.minDecibels = -90
-    analyzer.maxDecibels = -10
-    analyzer.smoothingTimeConstant = 0.85
+    analyzer.fftSize = bufferSize;
+    analyzer.minDecibels = -90;
+    analyzer.maxDecibels = -10;
+    analyzer.smoothingTimeConstant = 0.85;
 
-    return analyzer
+    return analyzer;
   }
 
   _configureRecognition(recognition) {
@@ -83,43 +83,43 @@ export default class Recorder {
     recognition.onend = () => { console.log('End') }
     recognition.onerror = e => console.error(e)
 
-    recognition.onresult = this._handleResult.bind(this)
+    recognition.onresult = this._handleResult.bind(this);
 
-    return recognition
+    return recognition;
   }
 
   _handleResult(e) {
-    var i, word, text = '', partial = ''
+    let i, word, text = '', partial = '';
 
     for (i = e.resultIndex; i < e.results.length; i += 1) {
-      word = e.results[i][0].transcript
+      word = e.results[i][0].transcript;
 
       if (e.results[i].isFinal) {
-        text += word
-        console.log("Text:", text)
-        this.end = true
+        text += word;
+        console.log("Text:", text);
+        this.end = true;
       } else {
-        partial += word
-        console.log("Partial:", partial)
+        partial += word;
+        console.log("Partial:", partial);
       }
     }
 
     if (text) {
-      this._updateWords(text.split(' '))
+      this._updateWords(text.split(' '));
     } else if (partial) {
-      this._updateWords(partial.split(' '))
+      this._updateWords(partial.split(' '));
     }
   }
 
   _updateWords(words) {
     words.forEach((word, i) => {
       if (i < this.words.length) {
-        this.words[i].text = word
-        this.words[i].final = true
+        this.words[i].text = word;
+        this.words[i].final = true;
       } else {
-        this.words.push({ text: word, final: false })
+        this.words.push({ text: word, final: false });
       }
-    })
+    });
 
     console.log(this.words.map(w => w.text))
   }

@@ -17,7 +17,7 @@ module.exports = {
       ignore: [/^(bower_components|npm_modules|vendor)/]
     },
     sass: {
-      modules: true
+      modules: false
     }
   },
   server: {
