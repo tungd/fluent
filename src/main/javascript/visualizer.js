@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 
-let requestAnimationFrame = (window.requestAnimationFrame ||
-                             window.webkitRequestAnimationFrame ||
-                             window.mozRequestAnimationFrame ||
-                             window.msRequestAnimationFrame).bind(window);
+const requestAnimationFrame = (window.requestAnimationFrame ||
+                               window.webkitRequestAnimationFrame ||
+                               window.mozRequestAnimationFrame ||
+                               window.msRequestAnimationFrame).bind(window);
+
 
 export default class Visualizer extends Component {
 
   componentDidMount() {
+    if (this.props.isMobile) {
+      return
+    }
+
     const canvas = this.refs.canvas;
     canvas.style.width = '100%';
     canvas.width = canvas.offsetWidth;

@@ -2,6 +2,14 @@ import React from 'react';
 
 import Visualizer from './visualizer';
 
+var renderVisualizer = (props) => {
+  if (props.isMobile) {
+    return null
+  }
+
+  return <Visualizer recorder={props.recorder}/>
+}
+
 export default (props) => {
   return (
     <div className="row">
@@ -16,7 +24,7 @@ export default (props) => {
         <p className="label label-default">Recording</p>
       </div>
       <div className="col-xs-9" style={{position: 'relative'}}>
-        <Visualizer recorder={props.recorder}/>
+        {renderVisualizer(props)}
       </div>
     </div>
   );

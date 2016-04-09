@@ -8,20 +8,21 @@ import Meyda from 'meyda';
 
 export default class Recorder {
 
-  constructor(audio, recognition, bufferSize = 2048, features = ["rms", "energy"]) {
+  constructor(audio, recognition, enableAnalyze = false, bufferSize = 2048, features = ["rms", "energy"]) {
     this.started = false;
     this.audio = audio;
 
-    this.buffer = new Uint8Array(bufferSize);
-    this.features = features;
-    this.analyzer = this._createAnalyzer(audio, bufferSize);
+    if (enableAnalyze) {
+      this.buffer = new Uint8Array(bufferSize);
+      this.features = features;
+      this.analyzer = this._createAnalyzer(audio, bufferSize);
+    }
 
     this.recognition = this._configureRecognition(recognition);
     this.words = [];
   }
 
   start() {
-    console.log("Started!");
     if (this.started) {
       return;
     }
@@ -29,24 +30,26 @@ export default class Recorder {
     this.started = true;
     this.words = [];
 
-    this.recognition.start();
+    if (this.analyzer) {
+      getUserMedia({ audio: true }, stream => {
+        if (!this.source) {
+          this.source = this.audio.createMediaStreamSource(stream);
+          this.source.connect(this.analyzer);
 
-    getUserMedia({ audio: true }, stream => {
-      if (!this.source) {
-        this.source = this.audio.createMediaStreamSource(stream);
-        this.source.connect(this.analyzer);
+          this.meyda = Meyda.createMeydaAnalyzer({
+            audioContext: this.audio,
+            source: this.source,
+            bufferSize: this.bufferSize,
+            featureExtractors: this.features
+          });
 
-        this.meyda = Meyda.createMeydaAnalyzer({
-          audioContext: this.audio,
-          source: this.source,
-          bufferSize: this.bufferSize,
-          featureExtractors: this.features
-        });
-
-        this.meyda.start();
-        // this.recognition.start();
-      }
-    }, console.error.bind(console));
+          this.meyda.start();
+          this.recognition.start();
+        }
+      }, console.error.bind(console));
+    } else {
+      this.recognition.start();
+    }
   }
 
   stop() {
@@ -81,8 +84,8 @@ export default class Recorder {
     console.log(recognition.lang);
     recognition.lang = 'en';
 
-    // recognition.onstart =
-    recognition.onend = () => { console.log('End') };
+    recognition.onstart = _ => console.log("Started!");
+    recognition.onend = _ => console.log('End');
     recognition.onerror = e => console.error(e);
 
     recognition.onresult = this._handleResult.bind(this);
