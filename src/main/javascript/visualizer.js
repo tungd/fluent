@@ -8,40 +8,41 @@ let requestAnimationFrame = (window.requestAnimationFrame ||
 export default class Visualizer extends Component {
 
   componentDidMount() {
+    const canvas = this.refs.canvas;
+    canvas.style.width = '100%';
+    canvas.width = canvas.offsetWidth;
+
     let { recorder } = this.props,
-        canvas = this.refs.canvas,
         width = canvas.width,
         height = canvas.height,
         graphic = canvas.getContext('2d'),
         x = 0, y;
 
-    console.log('canvas height', canvas.height);
+    function draw() {
+      if (x > width) {
+        x = 0;
+        graphic.save();
+        graphic.fillStyle = '#f5f5f5';
+        graphic.fillRect(0, 0, width, height);
+        graphic.restore();
+      }
 
-    // function draw() {
-    //   if (x > width) {
-    //     x = 0;
-    //     graphic.save();
-    //     graphic.fillStyle = '#fff';
-    //     graphic.fillRect(0, 0, width, height);
-    //     graphic.restore();
-    //   }
+      y = height / 2 - recorder.analyze("energy") * 4;
+      if (x === 0) {
+        graphic.beginPath();
+        graphic.moveTo(x, y);
+      } else {
+        graphic.lineTo(x, y);
+      }
+      x += 1;
 
-    //   y = height / 2 - recorder.analyze("energy") * 4;
-    //   if (x === 0) {
-    //     graphic.beginPath();
-    //     graphic.moveTo(x, y);
-    //   } else {
-    //     graphic.lineTo(x, y);
-    //   }
-    //   x += 1;
+      graphic.strokeStyle = '#000';
+      graphic.strokeWidth = 2;
+      graphic.stroke();
+      requestAnimationFrame(draw);
+    }
 
-    //   graphic.strokeStyle = '#000';
-    //   graphic.strokeWidth = 2;
-    //   graphic.stroke();
-    //   requestAnimationFrame(draw)
-    // }
-
-    // draw();
+    draw();
   }
 
   shouldComponentUpdate() {

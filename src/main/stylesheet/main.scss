@@ -3,11 +3,17 @@ html {
     margin-top: 50px;
 
     .analyzer {
-      min-height: 100px;
+      min-height: 200px;
     }
 
     .word {
       display: inline-block;
+      font-size: 2em;
+      padding-right: 5px;
+    }
+
+    .btn-lg {
+      font-size: 2.5em;
     }
   }
 }

@@ -1,15 +1,6 @@
 import React, { Component } from 'react';
 
-class Word extends Component {
-
-  render() {
-    return (
-      <div className="word" style={{width: 45}}>
-        {this.props.text}
-      </div>
-    )
-  }
-}
+import Word from './word';
 
 export default class Analyzer extends Component {
 

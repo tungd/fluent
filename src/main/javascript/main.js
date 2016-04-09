@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 
 import Recorder from './recorder';
 import Analyzer from './analyzer';
-import Visualizer from './visualizer';
+import ToolBar  from './toolbar';
 
 class App extends Component {
 
@@ -24,26 +24,22 @@ class App extends Component {
   toggleRecording() {
     let recording = !this.state.recording;
 
-    this.setState({ recording });
+    this.setState({recording});
     if (recording) {
       this.recorder.start();
+    } else {
+      this.recorder.stop();
     }
   }
 
   render() {
     return (
       <div className="container">
-        <Analyzer recorder={this.recorder} />
-        <div className="row">
-          <div className="col-xs-4">
-            <button className="recording"
-                    onClick={this.toggleRecording.bind(this)}>
-              Recording
-            </button>
-          </div>
-          <div className="col-xs-8">
-            <Visualizer recorder={this.recorder} />
-          </div>
+        <div className="well">
+          <Analyzer recorder={this.recorder}/>
+          <ToolBar
+            recorder={this.recorder}
+            onClick={this.toggleRecording.bind(this)}/>
         </div>
       </div>
     )
