@@ -29,6 +29,8 @@ export default class Recorder {
     this.started = true;
     this.words = [];
 
+    this.recognition.start();
+
     getUserMedia({ audio: true }, stream => {
       if (!this.source) {
         this.source = this.audio.createMediaStreamSource(stream);
@@ -42,7 +44,7 @@ export default class Recorder {
         });
 
         this.meyda.start();
-        this.recognition.start();
+        // this.recognition.start();
       }
     }, console.error.bind(console));
   }
