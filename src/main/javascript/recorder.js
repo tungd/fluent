@@ -76,10 +76,12 @@ export default class Recorder {
   _configureRecognition(recognition) {
     recognition.continuous = true
     recognition.interimResults = true
+    console.log(recognition.lang)
+    recognition.lang = 'en'
 
     // recognition.onstart =
     recognition.onend = () => { console.log('End') }
-    // recognition.onerror =
+    recognition.onerror = e => console.error(e)
 
     recognition.onresult = this._handleResult.bind(this)
 
