@@ -9,12 +9,15 @@ import Meyda from 'meyda'
 
 export default class Recorder {
 
-  constructor(audio, bufferSize = 2048, features = ["rms", "energy"]) {
+  constructor(audio, recognition, bufferSize = 2048, features = ["rms", "energy"]) {
     this.started = false
     this.audio = audio
 
     this.buffer = new Uint8Array(bufferSize)
     this.analyzer = this._createAnalyzer(audio, bufferSize)
+
+    this.recognition = this._configureRecognition(recognition)
+    this.words = []
   }
 
   start() {
@@ -24,6 +27,8 @@ export default class Recorder {
     }
 
     this.started = true
+    this.words = []
+
     getUserMedia({ audio: true }, stream => {
       if (!this.source) {
         this.source = this.audio.createMediaStreamSource(stream)
@@ -35,8 +40,17 @@ export default class Recorder {
           bufferSize: this.bufferSize,
           featureExtractors: this.features
         })
+
+        this.meyda.start()
+        this.recognition.start()
       }
     }, console.error.bind(console))
+  }
+
+  stop() {
+    this.meyda.stop()
+    this.recognition.stop()
+    this.started = false
   }
 
   analyze(feature) {
@@ -57,5 +71,54 @@ export default class Recorder {
     analyzer.smoothingTimeConstant = 0.85
 
     return analyzer
+  }
+
+  _configureRecognition(recognition) {
+    recognition.continuous = true
+    recognition.interimResults = true
+
+    // recognition.onstart =
+    recognition.onend = () => { console.log('End') }
+    // recognition.onerror =
+
+    recognition.onresult = this._handleResult.bind(this)
+
+    return recognition
+  }
+
+  _handleResult(e) {
+    var i, word, text = '', partial = ''
+
+    for (i = e.resultIndex; i < e.results.length; i += 1) {
+      word = e.results[i][0].transcript
+
+      if (e.results[i].isFinal) {
+        text += word
+        console.log("Text:", text)
+        this.end = true
+      } else {
+        partial += word
+        console.log("Partial:", partial)
+      }
+    }
+
+    if (text) {
+      this._updateWords(text.split(' '))
+    } else if (partial) {
+      this._updateWords(partial.split(' '))
+    }
+  }
+
+  _updateWords(words) {
+    words.forEach((word, i) => {
+      if (i < this.words.length) {
+        this.words[i].text = word
+        this.words[i].final = true
+      } else {
+        this.words.push({ text: word, final: false })
+      }
+    })
+
+    console.log(this.words.map(w => w.text))
   }
 }

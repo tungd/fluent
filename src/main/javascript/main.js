@@ -13,9 +13,9 @@ class App extends Component {
     super(props)
 
     // TODO: check support
-
     this.recorder = new Recorder(
       new (window.AudioContext || window.webkitAudioContext)(),
+      new (window.SpeechRecognition || window.webkitSpeechRecognition)(),
       2048)
 
     this.state = {
@@ -35,7 +35,7 @@ class App extends Component {
   render() {
     return (
       <div className="app">
-        <Analyzer />
+        <Analyzer recorder={this.recorder} />
         <div className="toolbar">
           <button className="recording"
                   onClick={this.toggleRecording.bind(this)}>

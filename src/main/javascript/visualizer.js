@@ -24,14 +24,7 @@ export default class Visualizer extends Component {
         graphic.restore()
       }
 
-      // recorder.buffer
-
-      var energy = recorder.analyze("energy")
-      if (energy) {
-        console.log(energy)
-      }
       y = height / 2 - recorder.analyze("energy") * 4
-      // y = height / 2 - meyda.get("rms") * 256
       if (x === 0) {
         graphic.beginPath()
         graphic.moveTo(x, y)
