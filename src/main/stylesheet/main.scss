@@ -1,0 +1,77 @@
+html {
+  body {
+    .analyzer {
+      min-height: 450px;
+    }
+
+    .word {
+      color: #ddd;
+      display: inline-block;
+      font-size: 2em;
+      margin: 8px 12px;
+      border-bottom: 3px solid #9BC53D;
+      transition: color 0.3s ease-in;
+    }
+
+    .word.suggestion {
+      border-bottom-color: #FDE74C;
+    }
+
+    .word.error {
+      border-bottom-color: #E55934;
+    }
+
+    .word.final {
+      color: #666;
+    }
+
+    .btn-lg {
+      font-size: 2.5em;
+    }
+  }
+}
+
+.header {
+  padding: 10px;
+  margin: 0;
+  font-size: 24px;
+  background: #5BC0EB;
+  color: #fff;
+}
+
+.toolbar {
+  display: flex;
+  padding: 10px;
+  background: #5BC0EB;
+}
+
+.visualizer {
+  background: #f5f5f5;
+  height: 64px;
+  flex: 1;
+  border-radius: 5px;
+}
+
+.recording {
+  margin-right: 10px;
+  //background: #E55934;
+  border-radius: 50%;
+}
+
+.updateWords-enter {
+  opacity: 0.01;
+}
+
+.updateWords-enter.updateWords-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.updateWords-leave {
+  opacity: 1;
+}
+
+.updateWords-leave.updateWords-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}

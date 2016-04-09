@@ -1,7 +1,10 @@
+.DS_Store
 .idea/
 *.iml
 node_modules/
 target/
 src/main/resources/static/app.js
 src/main/resources/static/app.js.map
+src/main/resources/static/app.css
+src/main/resources/static/app.css.map
 *.log

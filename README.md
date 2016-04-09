@@ -9,6 +9,13 @@
 
 ## Install dependencies
 ```
-$ npm install
+$ npm install 
+$ npm install -g node-sass
 $ mvn clean dependency:resolve
+```
+
+## Start
+```
+$ npm start
+$ open localhost:3333
 ```

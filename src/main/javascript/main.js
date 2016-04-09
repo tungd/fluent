@@ -1,22 +1,25 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 
+import Recorder from './recorder';
+import Analyzer from './analyzer';
+import ToolBar  from './toolbar';
 
-import Recorder from './recorder'
-import Analyzer from './analyzer'
-import Visualizer from './visualizer'
-
+const isMobile = true
+// /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
 class App extends Component {
 
   constructor(props) {
-    super(props)
+    super(props);
 
     // TODO: check support
-
     this.recorder = new Recorder(
       new (window.AudioContext || window.webkitAudioContext)(),
-      2048)
+      new (window.SpeechRecognition || window.webkitSpeechRecognition)(),
+      !isMobile,
+      2048
+    );
 
     this.state = {
       recording: false
@@ -24,27 +27,28 @@ class App extends Component {
   }
 
   toggleRecording() {
-    let recording = !this.state.recording
+    let recording = !this.state.recording;
 
-    this.setState({ recording })
+    this.setState({recording});
     if (recording) {
-      this.recorder.start()
+      this.recorder.start();
+    } else {
+      this.recorder.stop();
     }
   }
 
   render() {
     return (
       <div className="app">
-        <Analyzer />
-        <div className="toolbar">
-          <button className="recording"
-                  onClick={this.toggleRecording.bind(this)}>
-            Recording
-          </button>
-          <Visualizer recorder={this.recorder} />
-        </div>
+        <h1 className="header">Fluent</h1>
+        <Analyzer recorder={this.recorder}/>
+        <ToolBar
+          recorder={this.recorder}
+          recording={this.state.recording}
+          onClick={this.toggleRecording.bind(this)}
+          isMobile={isMobile}/>
       </div>
-    )
+    );
   }
 }
 
