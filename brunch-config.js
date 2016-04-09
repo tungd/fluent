@@ -6,7 +6,8 @@ module.exports = {
   },
   paths: {
     watched: [
-      "src/main/javascript"
+      "src/main/javascript",
+      "src/main/stylesheet"
     ],
     public: "src/main/resources/static/"
   },
@@ -14,10 +15,13 @@ module.exports = {
     babel: {
       presets: ['es2015', 'react'],
       ignore: [/^(bower_components|npm_modules|vendor)/]
+    },
+    sass: {
+      modules: true
     }
   },
   npm: {
     enabled: true,
     whitelist: ['whatwg-fetch', 'react', 'react-dom', 'lodash']
   }
-}
+};

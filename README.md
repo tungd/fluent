@@ -10,5 +10,6 @@
 ## Install dependencies
 ```
 $ npm install
+$ npm install -g node-sass
 $ mvn clean dependency:resolve
 ```
