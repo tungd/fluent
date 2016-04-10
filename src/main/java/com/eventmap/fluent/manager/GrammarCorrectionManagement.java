@@ -1,17 +1,10 @@
 package com.eventmap.fluent.manager;
 
-import com.eventmap.fluent.domain.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.eventmap.fluent.domain.json.Rules;
-
-import com.eventmap.fluent.exception.FluentException;
-import com.eventmap.fluent.utils.JSONUtil;
-import com.eventmap.fluent.utils.StaticStrings;
-import com.eventmap.fluent.utils.XMLUtil;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
-import org.junit.Assert;
-import org.junit.Test;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
 import org.languagetool.rules.RuleMatch;
@@ -19,13 +12,13 @@ import org.languagetool.rules.patterns.AbstractPatternRule;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.Exception;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import com.eventmap.fluent.domain.Match;
+import com.eventmap.fluent.domain.Matches;
+import com.eventmap.fluent.domain.SummarizeResult;
+import com.eventmap.fluent.domain.json.Rules;
+import com.eventmap.fluent.utils.JSONUtil;
+import com.eventmap.fluent.utils.StaticStrings;
+import com.eventmap.fluent.utils.XMLUtil;
 
 /**
  * Created by huytran on 4/9/16.
