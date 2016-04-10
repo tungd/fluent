@@ -212,7 +212,7 @@ public class SynonymSuggestionManager {
 		AdjectiveSynset[] adjHynponyms;
 		VerbSynset verbSynset;
 		VerbSynset[] verbHynponyms;
-		String suggestMessage="";
+		String suggestMessage="Synonym available: ";
 
 		WordNetDatabase database = WordNetDatabase.getFileInstance();
 		SynsetType wordType = null;
@@ -242,7 +242,7 @@ public class SynonymSuggestionManager {
 			    		listSyn=listSyn+ list+",";
 			    	}
 				}
-		    suggestMessage =suggestMessage + adjSyn.getDefinition() +"\n Synonym:"+ listSyn+ "\n \n";
+		    suggestMessage =suggestMessage + adjSyn.getWordForms()[0]+ ":" + adjSyn.getDefinition() +"\n Synonym:"+ listSyn+ "\n \n";
 		    if (i>=3)
 		    	break;
 			}
@@ -263,7 +263,7 @@ public class SynonymSuggestionManager {
 			    		listSyn=listSyn+ list+",";
 			    	}
 				}
-			    suggestMessage =suggestMessage + verbSynset.getDefinition() +"\n Synonym: "+listSyn+ "\n \n";
+			    suggestMessage =suggestMessage + verbSynset.getWordForms()[0] +":"+ verbSynset.getDefinition() +"\n Synonym: "+listSyn+ "\n \n";
 			    if (i>=3)
 			    	break;
 			}
