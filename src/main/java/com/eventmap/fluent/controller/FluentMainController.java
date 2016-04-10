@@ -52,7 +52,9 @@ public class FluentMainController {
     @ResponseBody
     public Matches grammarCheck(@RequestParam String sentence){
         try {
-            return grammarCorrectionManagement.correctData(sentence);
+        	Matches matchList = grammarCorrectionManagement.correctData(sentence);
+        	matchList.getMatches().addAll(synonymManagement.suggestWordProcess(sentence).getMatches());
+            return matchList;
         }catch (Exception e){
             throw new FluentException();
         }

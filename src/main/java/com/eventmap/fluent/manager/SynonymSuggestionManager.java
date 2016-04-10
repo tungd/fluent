@@ -57,7 +57,7 @@ public class SynonymSuggestionManager {
 	    List wordList = tokenizerFactory.getTokenizer(new StringReader(text)).tokenize();
 	    Tree tree = lp.apply(wordList);
 	    GrammaticalStructure gs = gsf.newGrammaticalStructure(tree);
-//	    System.out.println(gs);
+	    System.out.println("job Start");
 	    Collection<TypedDependency> tdl = gs.typedDependenciesCollapsed();
 	    System.out.println(tdl);
 //	    List<TypedDependency> listType = new ArrayList<TypedDependency>(tdl);
@@ -115,11 +115,18 @@ public class SynonymSuggestionManager {
 //			}
 		Matches matchList = new Matches();
 		for (Word verb: verbList) {
-			Match match= synonymSuggestion(verb.word(), "VP",verb.beginPosition());
+			
+			
+			int position = text.substring(0, verb.beginPosition()).split(" ").length;
+			System.out.println("SubString: "+text.substring(0, verb.beginPosition())+ " Begin position"+position + " Column position:" +verb.beginPosition());
+			Match match= synonymSuggestion(verb.word(), "VP",position);
 			matchList.getMatches().add(match);
 		}
 		for (Word adj: adjList) {
-			Match match= synonymSuggestion(adj.word(),"ADJ",adj.beginPosition());
+//			System.out.println(text.substring(0, adj.beginPosition()));
+			int position = text.substring(0, adj.beginPosition()).split(" ").length;
+			System.out.println("SubString: "+text.substring(0, adj.beginPosition())+ " Begin position"+position + " Column position:" +adj.beginPosition());
+			Match match= synonymSuggestion(adj.word(),"ADJ",position);
 			matchList.getMatches().add(match);
 		}
 		System.out.println("Finish");
