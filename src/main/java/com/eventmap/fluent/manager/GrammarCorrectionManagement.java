@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.eventmap.fluent.domain.Result;
 import org.apache.log4j.Logger;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.BritishEnglish;
