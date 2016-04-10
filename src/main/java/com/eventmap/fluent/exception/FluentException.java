@@ -7,7 +7,7 @@ public class FluentException extends RuntimeException{
 
     private static final long serialVersionUID = 1L;
 
-    public FluentException(){
-        super("Network trouble, services are not available");
+    public FluentException(Exception cause) {
+        super(cause);
     }
 }
