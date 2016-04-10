@@ -8,7 +8,7 @@ See tagset.txt for the meaning of the POS tags
 Copyright (C) 2001-2015 Daniel Naber (http://www.danielnaber.de),
   Marcin Miłkowski and the LanguageTool contributors
 
-Portions of rules are converted from After The Deadline grammar checker, 
+Portions of rules are converted from After The Deadline grammar checker,
 available at http://open.afterthedeadline.com/, licensed under
 GNU GPL.
 
@@ -36,11 +36,11 @@ USA
 ]>
 
 <rules lang="en" xsi:noNamespaceSchemaLocation="../../../../../../../../../languagetool-core/src/main/resources/org/languagetool/rules/rules.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    
+
     <!-- ====================================================================== -->
     <!-- Possible typo -->
     <!-- ====================================================================== -->
-    <category id="ABC" name="Possible Typo" type="misspelling">
+    <category id="UserRule" name="Possible Typo" type="misspelling">
         <rule id="HUY" name="wont (won't)">
             <pattern>
                 <marker>
@@ -53,7 +53,71 @@ USA
             <example>We were wont to meet at that pleasant spot.</example>
             <example>As is his wont, Tourneur shows us only parts of the set, in logical sequence, each at the moment when, and not before, we need to see it.</example>
         </rule>
+    <rule id="ABC" name = "ABCD (won't)">
+        <pattern>
+            <token>wont
+                <exception scope="previous" postag="PRP$"/>
+            </token>
+            <token>
+                <exception>to</exception>
+            </token>
+        </pattern>
+        <message>[Please make sure you mean 'won't' (a habit), not<suggestion>won't</suggestion>/<suggestion>
+            won’t</suggestion>(short for 'will not')?]
+        </message>
+        <message>Please make sure you mean 'won't' (a habit)</message>
+        <message>not<suggestion>won't</suggestion>/<suggestion>won’t</suggestion>(short for 'will not')?
+        </message>
+        <example>No, I
+            <marker>won't</marker>
+            do that.
+        </example>
+        <example>We were wont to meet at that pleasant spot</example>
+        <example>As is his wont, Tourneur shows us only parts of the set, in logical sequence, each at the moment when,
+            and not before, we need to see it.
+        </example>
+    </rule>
 
-  </category>
+        <rule id="new Rule" name="my New Rule (won't)">
+            <pattern>
+                <token>wont
+                    <exception scope="previous" postag="PRP$"/>
+                </token>
+                <token>
+                    <exception>to</exception>
+                </token>
+            </pattern>
+            <message>[Please make sure you mean 'wont' (a habit), not<suggestion>won't</suggestion>/<suggestion>
+                won’t</suggestion>(short for 'will not')?]
+            </message>
+            <message>Please make sure you mean 'wont' (a habit)</message>
+            <message>not<suggestion>won't</suggestion>/<suggestion>won’t</suggestion>(short for 'will not')?
+            </message>
+            <example>No, I
+                <marker>wont</marker>
+                do that.
+            </example>
+            <example>We were wont to meet at that pleasant spot</example>
+            <example>As is his wont, Tourneur shows us only parts of the set, in logical sequence, each at the moment
+                when, and not before, we need to see it.
+            </example>
+        </rule>
+        <rule id="DEMO_QUICK" name="Demo quick">
+            <pattern>
+                <token>quick</token>
+            </pattern>
+            <message>Use adverb instead of adjective, not <match no="1" />, but <suggestion>quickly</suggestion> or <suggestion>fast</suggestion></message>
+            <example>I can run <marker>quickly</marker></example>
+            <example>I can run</example>
+            <example>I can run <marker>fast</marker></example>
+        </rule>
 
+        <rule id="DEMO_VERBING" name="Demo verb-ing">
+            <pattern>
+                <token>been</token>
+                <token postag='NN:UN'></token>
+            </pattern>
+            <message>Use continuous form, not <match no="2" /> but <suggestion><match no="2" />ing</suggestion></message>
+        </rule>
+</category>
 </rules>

@@ -1,10 +1,7 @@
 package com.eventmap.fluent.manager;
 
-import com.eventmap.fluent.domain.Match;
-import com.eventmap.fluent.domain.Matches;
+import com.eventmap.fluent.domain.*;
 
-import com.eventmap.fluent.domain.ResultHub;
-import com.eventmap.fluent.domain.SummarizeResult;
 import com.eventmap.fluent.domain.json.Rules;
 
 import com.eventmap.fluent.exception.FluentException;
@@ -12,6 +9,7 @@ import com.eventmap.fluent.utils.JSONUtil;
 import com.eventmap.fluent.utils.StaticStrings;
 import com.eventmap.fluent.utils.XMLUtil;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 import org.languagetool.JLanguageTool;
@@ -83,13 +81,34 @@ public class GrammarCorrectionManagement {
         return "Your rule is successfully added to library";
     }
 
-    public SummarizeResult getSummarize(String finalResult){
+    public SummarizeResult getSummarize(String finalResult, int speechTime) throws Exception{
+
+        finalResult = finalResult.toUpperCase().charAt(0) +  finalResult.substring(1);
+
+        Matches matches = new Matches();
+        jLanguageTool = new JLanguageTool(new BritishEnglish());
+
+        loadCustomRules();
+        List<RuleMatch> lsRuleMatch = jLanguageTool.check(finalResult);
+
+        int totalWords = finalResult.split(" ").length;
+        int incorrectWords = lsRuleMatch.size();
+        int correctWords = totalWords - incorrectWords;
+
+        float speedAverage = totalWords * 1.0f/speechTime*1000*60;
+
         SummarizeResult summarizeResult = new SummarizeResult();
+        summarizeResult.setTotalWords(totalWords);
+        summarizeResult.setCorrectWords(correctWords);
+        summarizeResult.setIncorrectWords(incorrectWords);
+        summarizeResult.setSpeechSpeedAverage(speedAverage);
+
         return summarizeResult;
     }
 
-    public ResultHub getResult() throws Exception{
+    public Result getResult() throws Exception{
         JSONUtil jsonUtil = new JSONUtil();
         return jsonUtil.readJSONfromResultFile();
     }
+
 }

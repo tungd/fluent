@@ -1,6 +1,7 @@
 package com.eventmap.fluent.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ public class Match implements Serializable {
 
     private String messages;
 
-    private List<String> correction;
+    private List<String> correction = new ArrayList<String>();
 
     public int getPosition() {
         return position;

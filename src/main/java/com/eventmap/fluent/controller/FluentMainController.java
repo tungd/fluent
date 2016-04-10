@@ -1,7 +1,6 @@
 package com.eventmap.fluent.controller;
 
-import java.util.concurrent.CompletableFuture;
-
+import com.eventmap.fluent.domain.*;
 import com.eventmap.fluent.domain.ResultHub;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -12,11 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eventmap.fluent.domain.Matches;
 import com.eventmap.fluent.manager.GrammarCorrectionManagement;
 import com.eventmap.fluent.manager.SynonymSuggestionManager;
 import com.eventmap.fluent.domain.Matches;
-import com.eventmap.fluent.domain.SummarizeResult;
 import com.eventmap.fluent.exception.FluentException;
 import com.eventmap.fluent.manager.GrammarCorrectionManagement;
 import org.apache.log4j.Logger;
@@ -77,15 +74,19 @@ public class FluentMainController {
         }
     }
 
-    @RequestMapping(value = "summarize", method = RequestMethod.POST)
+    @RequestMapping(value = "summarize")
     @ResponseBody
-    public SummarizeResult getSummarize(@RequestBody String finalResult){
-        return grammarCorrectionManagement.getSummarize(finalResult);
+    public SummarizeResult getSummarize(@RequestParam String text, @RequestParam int duration){
+        try {
+            return grammarCorrectionManagement.getSummarize(text, duration);
+        }catch(Exception e){
+            throw new FluentException();
+        }
     }
 
     @RequestMapping(value = "getResult")
     @ResponseBody
-    public ResultHub getResult(){
+    public Result getResult(){
         try {
             return grammarCorrectionManagement.getResult();
         }catch(Exception e){

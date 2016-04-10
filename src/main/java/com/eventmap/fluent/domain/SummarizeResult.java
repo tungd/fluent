@@ -4,10 +4,14 @@ package com.eventmap.fluent.domain;
  * Created by huytran on 4/10/16.
  */
 public class SummarizeResult {
+
     private int correctWords;
+
     private int incorrectWords;
+
     private int totalWords;
-    private int speechSpeedAverage;
+
+    private float speechSpeedAverage;
 
     public int getCorrectWords() {
         return correctWords;
@@ -33,11 +37,11 @@ public class SummarizeResult {
         this.totalWords = totalWords;
     }
 
-    public int getSpeechSpeedAverage() {
+    public float getSpeechSpeedAverage() {
         return speechSpeedAverage;
     }
 
-    public void setSpeechSpeedAverage(int speechSpeedAverage) {
+    public void setSpeechSpeedAverage(float speechSpeedAverage) {
         this.speechSpeedAverage = speechSpeedAverage;
     }
 }

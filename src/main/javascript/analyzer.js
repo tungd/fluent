@@ -1,9 +1,9 @@
-
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import QueueAnim from 'rc-queue-anim';
 import _ from 'lodash';
 import axios from 'axios';
+import ReactTooltip from 'react-tooltip';
 
 import Word from './word';
 
@@ -30,6 +30,7 @@ function scrollTo(element, to, duration) {
   }, 10);
 }
 
+export const CORRECTION_API = 'http://192.168.1.115:8080/correction?sentence=';
 
 export default class Analyzer extends Component {
 
@@ -39,7 +40,7 @@ export default class Analyzer extends Component {
     this.props.recorder.onUpdate = words => {
       var text = [].concat.apply([], words).filter(w => w);
 
-      axios.get(`http://localhost:8080/correction?sentence=${text.map(w => { console.log(text, w); return w.text }).join(' ')}`).then(({data}) => {
+      axios.get(`${CORRECTION_API}${text.map(w => w.text).join(' ')}`).then(({data}) => {
           if (data && data.matches) {
             data.matches.forEach((m, i) => {
               console.log(m.position - 1, text[m.position - 1]);
@@ -90,6 +91,7 @@ export default class Analyzer extends Component {
 
     return (
       <div className="analyzer">
+        <ReactTooltip />
         <div className="analyzer__inner">
           {words.map(this.renderWord.bind(this))}
         </div>
