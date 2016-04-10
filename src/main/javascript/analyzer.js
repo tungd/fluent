@@ -30,27 +30,30 @@ function scrollTo(element, to, duration) {
   }, 10);
 }
 
-export const CORRECTION_API = 'http://192.168.1.115:8080/correction?sentence=';
+export const CORRECTION_API = 'http://192.168.43.201:8080/correction?sentence=';
 
 export default class Analyzer extends Component {
 
   constructor(props) {
     super(props);
 
+    this.updated = false;
+
     this.props.recorder.onUpdate = words => {
       var text = [].concat.apply([], words).filter(w => w);
 
       axios.get(`${CORRECTION_API}${text.map(w => w.text).join(' ')}`).then(({data}) => {
-          if (data && data.matches) {
-            data.matches.forEach((m, i) => {
-              console.log(m.position - 1, text[m.position - 1]);
-              text[m.position] = Object.assign(text[m.position], {
-                messages: m.messages,
-                correction: m.correction
-              });
+        var text = this.state.words;
+        if (data && data.matches) {
+          data.matches.forEach((m, i) => {
+            console.log(m.position - 1, text[m.position - 1]);
+            text[m.position] = Object.assign(text[m.position], {
+              messages: m.messages,
+              correction: m.correction
             });
-          }
-        this.setState({ words: text });
+          });
+        }
+        this.setState({words: text});
       });
       this.setState({ words: text });
     };
