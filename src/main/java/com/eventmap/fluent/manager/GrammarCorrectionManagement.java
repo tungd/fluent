@@ -83,7 +83,9 @@ public class GrammarCorrectionManagement {
 
     public SummarizeResult getSummarize(String finalResult, int speechTime) throws Exception{
 
-        finalResult = finalResult.toUpperCase().charAt(0) +  finalResult.substring(1);
+        if (finalResult.length() != 0) {
+            finalResult = finalResult.toUpperCase().charAt(0) + finalResult.substring(1);
+        }
 
         Matches matches = new Matches();
         jLanguageTool = new JLanguageTool(new BritishEnglish());
