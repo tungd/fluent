@@ -46,7 +46,7 @@ public class SynonymSuggestionManager {
 	List<Word> verbList;
 	List<Word> adjList;
 	Map<Integer,String> compoundWord;
-	
+
 	public Matches suggestWordProcess(String text) {
 		compoundWord = new HashMap<Integer, String>();
 	    TreebankLanguagePack tlp = new PennTreebankLanguagePack();
@@ -74,7 +74,7 @@ public class SynonymSuggestionManager {
 		verbList = new ArrayList<Word>();
 		adjList = new ArrayList<Word>();
 //		Properties props = new Properties();
-//		
+//
 //		props.setProperty("annotators", "tokenize, ssplit, pos, parse");
 //		StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
@@ -86,9 +86,9 @@ public class SynonymSuggestionManager {
 
 		// run all Annotators on this text
 //		pipeline.annotate(document);
-		
+
 //		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
-		
+
 //		for(CoreMap sentence: sentences) {
 			  // traversing the words in the current sentence
 			  // a CoreLabel is a CoreMap with additional token-specific methods
@@ -126,13 +126,13 @@ public class SynonymSuggestionManager {
 		return matchList;
 
 	}
-	
+
 	public  List<String> extractPhrasesFromString(Tree tree, String originalString) {
 	    List<String> foundPhraseNodes = new ArrayList<String>();
 
 	    collect(tree, foundPhraseNodes);
 //	    logger.debug("parsing " + originalString + " yields " + foundPhraseNodes.size() + " noun node(s).");
-	    
+
 	    return  foundPhraseNodes;
 	}
 
@@ -140,7 +140,7 @@ public class SynonymSuggestionManager {
 	    if (tree == null || tree.isLeaf()) {
 	        return;
 	    }
-	    
+
 //	    nounNodeNames.add( "NNPS");
 
 
@@ -170,9 +170,9 @@ public class SynonymSuggestionManager {
                     	verbList.add(word);
                     }
 	        	}
-	        	
+
 //	        	System.out.println(leaves);
-//	        	for (Tree leaf : leaves){ 
+//	        	for (Tree leaf : leaves){
 //	                List<Word> words = leaf.yieldWords();
 //	                for (Word word: words)
 //	                    System.out.print(String.format("(%s - "+category+"),",word.word()));
@@ -193,14 +193,14 @@ public class SynonymSuggestionManager {
 	        collect(kid, foundPhraseNodes);
 	    }
 	}
-	
+
 	public Match synonymSuggestion(String word, String type, Integer position) {
 		Match match = new Match();
 		System.out.println("Start Process word: "+word +"\n");
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		System.setProperty("wordnet.database.dir", classloader.getResource("dict").getPath());
-		NounSynset nounSynset; 
-		NounSynset[] hyponyms; 
+		NounSynset nounSynset;
+		NounSynset[] hyponyms;
 		AdjectiveSynset adjSyn;
 		AdjectiveSynset[] adjHynponyms;
 		VerbSynset verbSynset;
@@ -211,20 +211,20 @@ public class SynonymSuggestionManager {
 		SynsetType wordType = null;
 		if (type.equals("NP")) {
 			wordType = SynsetType.NOUN;
-			Synset[] synsets = database.getSynsets(word, wordType); 
-			for (int i = 0; i < synsets.length; i++) { 
-			    nounSynset = (NounSynset)(synsets[i]); 
-			    hyponyms = nounSynset.getHyponyms(); 
-			    System.out.println(nounSynset.getWordForms()[0] + 
-			            ": " + nounSynset.getDefinition() + ") has " + hyponyms.length + " hyponyms"); 
+			Synset[] synsets = database.getSynsets(word, wordType);
+			for (int i = 0; i < synsets.length; i++) {
+			    nounSynset = (NounSynset)(synsets[i]);
+			    hyponyms = nounSynset.getHyponyms();
+			    System.out.println(nounSynset.getWordForms()[0] +
+			            ": " + nounSynset.getDefinition() + ") has " + hyponyms.length + " hyponyms");
 			}
 		} else if (type.equals("ADJ")) {
 			wordType = SynsetType.ADJECTIVE;
-			Synset[] synsets = database.getSynsets(word, wordType); 
-			for (int i = 0; i < synsets.length; i++) { 
-				adjSyn = (AdjectiveSynset)(synsets[i]); 
-				adjHynponyms = adjSyn.getSimilar(); 
-				System.out.println(adjSyn.getWordForms()[0] + 
+			Synset[] synsets = database.getSynsets(word, wordType);
+			for (int i = 0; i < synsets.length; i++) {
+				adjSyn = (AdjectiveSynset)(synsets[i]);
+				adjHynponyms = adjSyn.getSimilar();
+				System.out.println(adjSyn.getWordForms()[0] +
 			            ": " + adjSyn.getDefinition() + ") has " + adjHynponyms.length + " similar");
 				String defini = adjSyn.getDefinition();
 				String listSyn="";
@@ -241,11 +241,11 @@ public class SynonymSuggestionManager {
 			}
 		} else if (type.equals("VP")) {
 			wordType = SynsetType.VERB;
-			Synset[] synsets = database.getSynsets(word, wordType); 
-			for (int i = 0; i < synsets.length; i++) { 
-				verbSynset = (VerbSynset)(synsets[i]); 
-				verbHynponyms = verbSynset.getVerbGroup(); 
-			    System.out.println(verbSynset.toString() + 
+			Synset[] synsets = database.getSynsets(word, wordType);
+			for (int i = 0; i < synsets.length; i++) {
+				verbSynset = (VerbSynset)(synsets[i]);
+				verbHynponyms = verbSynset.getVerbGroup();
+			    System.out.println(verbSynset.toString() +
 			            ": " + verbSynset.getDefinition() + ") has " + verbHynponyms.length + " hyponyms");
 			    String defini = verbSynset.getDefinition();
 			    String listSyn="";
@@ -263,7 +263,7 @@ public class SynonymSuggestionManager {
 		}
 		match.setMessages(suggestMessage);
 		match.setPosition(position);
-		
+
 		return match;
 	}
 
