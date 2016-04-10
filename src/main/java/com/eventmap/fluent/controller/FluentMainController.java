@@ -1,5 +1,7 @@
 package com.eventmap.fluent.controller;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
@@ -47,12 +49,20 @@ public class FluentMainController {
     @RequestMapping(value = "correction"/*, method = RequestMethod.POST*/)
     @ResponseBody
     public Matches grammarCheck(@RequestParam String sentence){
-        return grammarCorrectionManagement.correctData(sentence);
+         Matches matches =  grammarCorrectionManagement.correctData(sentence);
+         return matches;
+    	
+//    	CompletableFuture<Matches> grammarMatches;
+//    	CompletableFuture<Matches> sysnonymMatches;
+    	
+//    	return CompletableFuture.allOf(grammarMatches, sysnonymMatches);
     }
     
     @RequestMapping(value="synonym", method = RequestMethod.POST)
-    public void synonymCheck(@RequestParam String text) {
-    	 synonymManagement.suggestWordProcess(text);
+    @ResponseBody
+    public Matches synonymCheck(@RequestParam String text) {
+    	Matches matchList = synonymManagement.suggestWordProcess(text);
+    	return matchList;
     }
 
     @RequestMapping(value = "addition", method = RequestMethod.POST)

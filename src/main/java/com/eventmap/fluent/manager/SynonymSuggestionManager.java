@@ -6,13 +6,15 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Component;
 
-import com.eventmap.fluent.Main;
+import com.eventmap.fluent.domain.Match;
+import com.eventmap.fluent.domain.Matches;
 
 import edu.smu.tspell.wordnet.AdjectiveSynset;
 import edu.smu.tspell.wordnet.NounSynset;
@@ -21,13 +23,10 @@ import edu.smu.tspell.wordnet.SynsetType;
 import edu.smu.tspell.wordnet.VerbSynset;
 import edu.smu.tspell.wordnet.WordNetDatabase;
 import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.Label;
 import edu.stanford.nlp.ling.Word;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
-import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.process.CoreLabelTokenFactory;
 import edu.stanford.nlp.process.PTBTokenizer;
 import edu.stanford.nlp.process.TokenizerFactory;
@@ -35,19 +34,21 @@ import edu.stanford.nlp.trees.GrammaticalStructure;
 import edu.stanford.nlp.trees.GrammaticalStructureFactory;
 import edu.stanford.nlp.trees.PennTreebankLanguagePack;
 import edu.stanford.nlp.trees.Tree;
-import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
 import edu.stanford.nlp.trees.TreebankLanguagePack;
-import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.trees.TypedDependency;
 
 @Component
 @EnableAutoConfiguration
 public class SynonymSuggestionManager {
 	List<String> verbNodeNames = Arrays.asList(new String[]{"VB","VBD","VBG","VBN","VBP","VBZ"});
-	List<String> adjNodenames = Arrays.asList(new String[]{"JJ","JJR ","JJS "});
-	List<String> verbList;
-	List<String> adjList;
+	List<String> adjNodenames = Arrays.asList(new String[]{"JJ","JJR","JJS"});
+	List<String> ignoreToBe = Arrays.asList(new String[]{"is","are","am","be"});
+	List<Word> verbList;
+	List<Word> adjList;
+	Map<Integer,String> compoundWord;
 	
-	public void suggestWordProcess(String text) {
+	public Matches suggestWordProcess(String text) {
+		compoundWord = new HashMap<Integer, String>();
 	    TreebankLanguagePack tlp = new PennTreebankLanguagePack();
 	    GrammaticalStructureFactory gsf = tlp.grammaticalStructureFactory();
 	    LexicalizedParser lp = LexicalizedParser.loadModel(            "edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz" );
@@ -55,9 +56,23 @@ public class SynonymSuggestionManager {
 	    TokenizerFactory tokenizerFactory = PTBTokenizer.factory( new CoreLabelTokenFactory(), "");
 	    List wordList = tokenizerFactory.getTokenizer(new StringReader(text)).tokenize();
 	    Tree tree = lp.apply(wordList);
+	    GrammaticalStructure gs = gsf.newGrammaticalStructure(tree);
+//	    System.out.println(gs);
+	    Collection<TypedDependency> tdl = gs.typedDependenciesCollapsed();
+	    System.out.println(tdl);
+//	    List<TypedDependency> listType = new ArrayList<TypedDependency>(tdl);
+	    for (TypedDependency typedDep : tdl) {
+//	    	System.out.println(typedDep.reln());
+	    	if ("compound:prt".equals(typedDep.reln().toString())) {
+		    	System.out.println(typedDep.gov().word());
+		    	System.out.println(typedDep.gov().beginPosition());
+		    	String combineWord= typedDep.gov().word()+" "+typedDep.dep().word();
+		    	compoundWord.put(typedDep.gov().beginPosition(), combineWord);
+	    	}
+	    }
 	    System.out.println(tree);
-		verbList = new ArrayList<String>();
-		adjList = new ArrayList<String>();
+		verbList = new ArrayList<Word>();
+		adjList = new ArrayList<Word>();
 //		Properties props = new Properties();
 //		
 //		props.setProperty("annotators", "tokenize, ssplit, pos, parse");
@@ -98,14 +113,17 @@ public class SynonymSuggestionManager {
 			  // this is the Stanford dependency graph of the current sentence
 //			  SemanticGraph dependencies = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
 //			}
-		
-		for (String verb: verbList) {
-			synonymSuggestion(verb, "VP");
+		Matches matchList = new Matches();
+		for (Word verb: verbList) {
+			Match match= synonymSuggestion(verb.word(), "VP",verb.beginPosition());
+			matchList.getMatches().add(match);
 		}
-		for (String adj: adjList) {
-			synonymSuggestion(adj,"ADJ");
+		for (Word adj: adjList) {
+			Match match= synonymSuggestion(adj.word(),"ADJ",adj.beginPosition());
+			matchList.getMatches().add(match);
 		}
 		System.out.println("Finish");
+		return matchList;
 
 	}
 	
@@ -139,8 +157,18 @@ public class SynonymSuggestionManager {
 	        if (verbNodeNames.contains(category)) {
 	        	List<Word> words = tree.yieldWords();
 	        	for (Word word: words){
-                    System.out.print(String.format("(%s - "+category+"),",word.word()));
-                    verbList.add(word.word());
+	        		if (ignoreToBe.contains(word.word()))
+	        			continue;
+                    System.out.print(String.format("(%s - "+category+" "+word.beginPosition()+ "),",word.word()));
+                    String combineWord = compoundWord.get(word.beginPosition());
+                    if (combineWord!=null) {
+                    	Word newWord = new Word();
+                    	newWord.setWord(combineWord);
+                    	newWord.setBeginPosition(word.beginPosition());
+                    	verbList.add(newWord);
+                    }else {
+                    	verbList.add(word);
+                    }
 	        	}
 	        	
 //	        	System.out.println(leaves);
@@ -153,8 +181,8 @@ public class SynonymSuggestionManager {
 	        if (adjNodenames.contains(category)) {
 	        	List<Word> words = tree.yieldWords();
 	        	for (Word word: words){
-                    System.out.print(String.format("(%s - "+category+"),",word.word()));
-                    adjList.add(word.word());
+                    System.out.print(String.format("(%s - "+category+" "+word.beginPosition()+ "),",word.word()));
+                    adjList.add(word);
 	        	}
 	        }
 	    }
@@ -166,15 +194,9 @@ public class SynonymSuggestionManager {
 	    }
 	}
 	
-	private void getAllSynonym() {
-		for (String verb: verbList) {
-			synonymSuggestion(verb, "VP");
-		}
-		for (String adj: adjList) {
-			synonymSuggestion(adj,"ADJ");
-		}
-	}
-	public void synonymSuggestion(String word, String type) {
+	public Match synonymSuggestion(String word, String type, Integer position) {
+		Match match = new Match();
+		System.out.println("Start Process word: "+word +"\n");
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		System.setProperty("wordnet.database.dir", classloader.getResource("dict").getPath());
 		NounSynset nounSynset; 
@@ -183,6 +205,7 @@ public class SynonymSuggestionManager {
 		AdjectiveSynset[] adjHynponyms;
 		VerbSynset verbSynset;
 		VerbSynset[] verbHynponyms;
+		String suggestMessage="";
 
 		WordNetDatabase database = WordNetDatabase.getFileInstance();
 		SynsetType wordType = null;
@@ -203,9 +226,18 @@ public class SynonymSuggestionManager {
 				adjHynponyms = adjSyn.getSimilar(); 
 				System.out.println(adjSyn.getWordForms()[0] + 
 			            ": " + adjSyn.getDefinition() + ") has " + adjHynponyms.length + " similar");
-			    for (AdjectiveSynset set: adjHynponyms) {
-			    	System.out.println(set.toString());
-			    }
+				String defini = adjSyn.getDefinition();
+				String listSyn="";
+				if (adjHynponyms.length >0) {
+					AdjectiveSynset set = adjHynponyms[0];
+					String [] listSimilar = set.getWordForms();
+			    	for (String list: listSimilar) {
+			    		listSyn=listSyn+ list+",";
+			    	}
+				}
+		    suggestMessage =suggestMessage + adjSyn.getDefinition() +"\n Synonym:"+ listSyn+ "\n \n";
+		    if (i>=3)
+		    	break;
 			}
 		} else if (type.equals("VP")) {
 			wordType = SynsetType.VERB;
@@ -214,12 +246,25 @@ public class SynonymSuggestionManager {
 				verbSynset = (VerbSynset)(synsets[i]); 
 				verbHynponyms = verbSynset.getVerbGroup(); 
 			    System.out.println(verbSynset.toString() + 
-			            ": " + verbSynset.getDefinition() + ") has " + verbHynponyms.length + " hyponyms"); 
-			    for (VerbSynset set: verbHynponyms) {
-			    	System.out.println(set.toString());
-			    }
+			            ": " + verbSynset.getDefinition() + ") has " + verbHynponyms.length + " hyponyms");
+			    String defini = verbSynset.getDefinition();
+			    String listSyn="";
+			    if (verbHynponyms.length >0) {
+			    	VerbSynset set = verbHynponyms[0];
+					String [] listSimilar = set.getWordForms();
+			    	for (String list: listSimilar) {
+			    		listSyn=listSyn+ list+",";
+			    	}
+				}
+			    suggestMessage =suggestMessage + verbSynset.getDefinition() +"\n Synonym: "+listSyn+ "\n \n";
+			    if (i>=3)
+			    	break;
 			}
 		}
+		match.setMessages(suggestMessage);
+		match.setPosition(position.toString());
+		
+		return match;
 	}
 
 }

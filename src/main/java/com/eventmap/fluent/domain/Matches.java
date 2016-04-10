@@ -1,6 +1,7 @@
 package com.eventmap.fluent.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  */
 public class Matches implements Serializable {
 
-    private List<Match> matches;
+    private List<Match> matches = new ArrayList<Match>();
 
     public List<Match> getMatches() {
         return matches;
