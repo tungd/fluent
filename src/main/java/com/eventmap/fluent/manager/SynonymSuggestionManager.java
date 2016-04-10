@@ -120,14 +120,16 @@ public class SynonymSuggestionManager {
 			int position = text.substring(0, verb.beginPosition()).split(" ").length;
 			System.out.println("SubString: "+text.substring(0, verb.beginPosition())+ " Begin position"+position + " Column position:" +verb.beginPosition());
 			Match match= synonymSuggestion(verb.word(), "VP",position);
-			matchList.getMatches().add(match);
+			if (match!=null)
+				matchList.getMatches().add(match);
 		}
 		for (Word adj: adjList) {
 //			System.out.println(text.substring(0, adj.beginPosition()));
 			int position = text.substring(0, adj.beginPosition()).split(" ").length;
 			System.out.println("SubString: "+text.substring(0, adj.beginPosition())+ " Begin position"+position + " Column position:" +adj.beginPosition());
 			Match match= synonymSuggestion(adj.word(),"ADJ",position);
-			matchList.getMatches().add(match);
+			if (match!=null)
+				matchList.getMatches().add(match);
 		}
 		System.out.println("Finish");
 		return matchList;
@@ -267,6 +269,9 @@ public class SynonymSuggestionManager {
 			    if (i>=3)
 			    	break;
 			}
+		}
+		if (suggestMessage.equals("Synonym:")) {
+			return null;
 		}
 		match.setMessages(suggestMessage);
 		match.setPosition(position);
