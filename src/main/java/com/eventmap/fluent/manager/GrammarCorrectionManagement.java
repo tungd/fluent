@@ -55,7 +55,8 @@ public class GrammarCorrectionManagement {
             Match match = new Match();
             match.setMessages(ruleMatch.getMessage());
             match.setCorrection(ruleMatch.getSuggestedReplacements());
-            match.setPosition(String.valueOf(ruleMatch.getColumn()));
+            int position = inputString.substring(0, ruleMatch.getColumn()).split(" ").length - 1;
+            match.setPosition(position);
             lsMatch.add(match);
         }
         matches.setMatches(lsMatch);

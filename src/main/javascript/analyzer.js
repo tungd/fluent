@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import QueueAnim from 'rc-queue-anim';
 import _ from 'lodash';
+import axios from 'axios';
 
 import Word from './word';
 
@@ -12,8 +13,8 @@ const mock = [
   { text: 'to', duration: 10, final: true },
   { text: 'meet', duration: 10, final: true },
   { text: 'you', duration: 10, final: true },
-  { text: 'all', duration: 10, final: false },
-]
+  { text: 'all', duration: 10, final: false }
+];
 
 let scrolling = false;
 
@@ -35,7 +36,37 @@ export default class Analyzer extends Component {
   constructor(props) {
     super(props);
 
-    this.props.recorder.onUpdate = words => this.setState({ words });
+    // var onResponse = ({data}) => {
+    //   if (data && data.matches) {
+    //     data.matches.forEach((m) => {
+    //       sentence[m.position - 1] = {
+    //         messages: m.messages,
+    //         correction: m.correction
+    //       };
+    //     });
+    //   }
+    //   words[index] = sentence;
+    //   //console.log(words);
+    //
+    // }
+
+    this.props.recorder.onUpdate = words => {
+      var text = [].concat.apply([], words);
+
+      axios.get(`http://localhost:8080/correction?sentence=${text.map(w => { console.log(text, w); return w.text }).join(' ')}`).then(({data}) => {
+          if (data && data.matches) {
+            data.matches.forEach((m, i) => {
+              console.log(m.position - 1, text[m.position - 1]);
+              text[m.position] = Object.assign(text[m.position], {
+                messages: m.messages,
+                correction: m.correction
+              });
+            });
+          }
+        this.setState({ words: text });
+      });
+      this.setState({ words: text });
+    };
 
     // this.state = { words: mock };
     this.state = { words: [] };
@@ -50,7 +81,7 @@ export default class Analyzer extends Component {
   }
 
   componentDidUpdate() {
-    this.scrollToBottom()
+    this.scrollToBottom();
   }
 
   renderWord(word, i) {
@@ -74,7 +105,7 @@ export default class Analyzer extends Component {
     return (
       <div className="analyzer">
         <div className="analyzer__inner">
-          {words.map(this.renderSentence.bind(this))}
+          {words.map(this.renderWord.bind(this))}
         </div>
       </div>
     )
