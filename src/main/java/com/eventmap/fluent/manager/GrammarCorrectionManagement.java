@@ -81,7 +81,7 @@ public class GrammarCorrectionManagement {
         return "Your rule is successfully added to library";
     }
 
-    public SummarizeResult getSummarize(String finalResult) throws Exception{
+    public SummarizeResult getSummarize(String finalResult, int speechTime) throws Exception{
 
         finalResult = finalResult.toUpperCase().charAt(0) +  finalResult.substring(1);
 
@@ -94,19 +94,15 @@ public class GrammarCorrectionManagement {
         int totalWords = finalResult.split(" ").length;
         int incorrectWords = lsRuleMatch.size();
         int correctWords = totalWords - incorrectWords;
-        int speechSpeed = 10/totalWords;
+
+        float speedAverage = totalWords * 1.0f/speechTime*1000*60;
 
         SummarizeResult summarizeResult = new SummarizeResult();
         summarizeResult.setTotalWords(totalWords);
         summarizeResult.setCorrectWords(correctWords);
         summarizeResult.setIncorrectWords(incorrectWords);
-        summarizeResult.setSpeechSpeedAverage(speechSpeed);
+        summarizeResult.setSpeechSpeedAverage(speedAverage);
 
-        ResultHub resultHub = new ResultHub();
-        resultHub.setRecordDate(String.valueOf(new DateTime()));
-        resultHub.setSummarizeResult(summarizeResult);
-        JSONUtil jsonUtil = new JSONUtil();
-        jsonUtil.writeJSONToResultFile(resultHub);
         return summarizeResult;
     }
 
@@ -115,16 +111,4 @@ public class GrammarCorrectionManagement {
         return jsonUtil.readJSONfromResultFile();
     }
 
-    @Test
-    public void abc(){
-        GrammarCorrectionManagement grammarCorrectionManagement = new GrammarCorrectionManagement();
-        try {
-            grammarCorrectionManagement.getSummarize("im workin on hone");
-        }catch(Exception e){
-
-        }
-
-        Assert.assertEquals(true, true);
-
-    }
 }

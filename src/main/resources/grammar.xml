@@ -106,21 +106,18 @@ USA
             <pattern>
                 <token>quick</token>
             </pattern>
-            <message><match no="1" regexp_match="quick" regexp_replace="quickly"/> Adverb instead of adjactive <match no="2" regexp_match="quick" regexp_replace="fast"/> Replace adjactive</message>
-            <example correction=''>I can run <marker>quick</marker></example>
-            <example>I can run quickly</example>
+            <message>Use adverb instead of adjective, not <match no="1" />, but <suggestion>quickly</suggestion> or <suggestion>fast</suggestion></message>
+            <example>I can run <marker>quickly</marker></example>
             <example>I can run</example>
-            <example>I can run fast</example>
+            <example>I can run <marker>fast</marker></example>
         </rule>
 
         <rule id="DEMO_VERBING" name="Demo verb-ing">
             <pattern>
-                <token>watch</token>
+                <token>been</token>
+                <token postag='NN:UN'></token>
             </pattern>
-            <message>verb-ing instead of verb</message>
-            <example correction=''>I had been <marker>watch</marker> TV when my friend pass by</example>
-            <example>I had been watching TV when my friend pass by</example>
+            <message>Use continuous form, not <match no="2" /> but <suggestion><match no="2" />ing</suggestion></message>
         </rule>
-
 </category>
 </rules>

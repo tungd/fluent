@@ -72,11 +72,11 @@ public class FluentMainController {
         }
     }
 
-    @RequestMapping(value = "summarize", method = RequestMethod.POST)
+    @RequestMapping(value = "summarize")
     @ResponseBody
-    public SummarizeResult getSummarize(@RequestBody String finalResult){
+    public SummarizeResult getSummarize(@RequestParam String text, @RequestParam int duration){
         try {
-            return grammarCorrectionManagement.getSummarize(finalResult);
+            return grammarCorrectionManagement.getSummarize(text, duration);
         }catch(Exception e){
             throw new FluentException();
         }
