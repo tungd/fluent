@@ -4,9 +4,13 @@ package com.eventmap.fluent.domain;
  * Created by huytran on 4/10/16.
  */
 public class SummarizeResult {
+
     private int correctWords;
+
     private int incorrectWords;
+
     private int totalWords;
+
     private int speechSpeedAverage;
 
     public int getCorrectWords() {
