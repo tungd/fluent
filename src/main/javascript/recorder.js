@@ -11,6 +11,8 @@ export default class Recorder {
     this.started = false;
     this.end = false;
     this.audio = audio;
+    this.startAt = 0;
+    this.endAt = 0;
 
     if (enableAnalyze) {
       this.buffer = new Uint8Array(bufferSize);
@@ -29,6 +31,7 @@ export default class Recorder {
     }
 
     this.started = true;
+    this.startAt = Date.now();
     this.words = [];
 
     if (this.analyzer) {
@@ -50,8 +53,6 @@ export default class Recorder {
       }, console.error.bind(console));
     } else {
       this.recognition.start();
-
-
     }
   }
 
@@ -60,6 +61,7 @@ export default class Recorder {
       this.meyda.stop();
     }
 
+    this.endAt = Date.now();
     this.started = false;
     this.end = true;
     this.recognition.stop();
@@ -107,7 +109,7 @@ export default class Recorder {
   }
 
   _handleResult(e) {
-    console.log(this.words);
+    // console.log(this.words);
     let text = '';
 
     if (!this.words[this.sentence]) {

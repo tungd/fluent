@@ -39,7 +39,7 @@ export default class Analyzer extends Component {
     this.props.recorder.onUpdate = words => {
       var text = [].concat.apply([], words).filter(w => w);
 
-      axios.get(`http://localhost:8080/correction?sentence=${text.map(w => { console.log(text, w); return w.text }).join(' ')}`).then(({data}) => {
+      axios.get(`http://192.168.1.115:8080/correction?sentence=${text.map(w => { console.log(text, w); return w.text }).join(' ')}`).then(({data}) => {
           if (data && data.matches) {
             data.matches.forEach((m, i) => {
               console.log(m.position - 1, text[m.position - 1]);
