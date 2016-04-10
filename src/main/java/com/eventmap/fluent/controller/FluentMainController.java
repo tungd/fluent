@@ -1,11 +1,8 @@
 package com.eventmap.fluent.controller;
 
-<<<<<<< HEAD
 import java.util.concurrent.CompletableFuture;
 
-=======
 import com.eventmap.fluent.domain.ResultHub;
->>>>>>> 3807356264fc72326674364e65b0616bbfbd61e7
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;

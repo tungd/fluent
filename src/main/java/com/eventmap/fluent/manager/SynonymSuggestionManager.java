@@ -262,7 +262,7 @@ public class SynonymSuggestionManager {
 			}
 		}
 		match.setMessages(suggestMessage);
-		match.setPosition(position.toString());
+		match.setPosition(position);
 		
 		return match;
 	}
