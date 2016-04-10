@@ -36,22 +36,8 @@ export default class Analyzer extends Component {
   constructor(props) {
     super(props);
 
-    // var onResponse = ({data}) => {
-    //   if (data && data.matches) {
-    //     data.matches.forEach((m) => {
-    //       sentence[m.position - 1] = {
-    //         messages: m.messages,
-    //         correction: m.correction
-    //       };
-    //     });
-    //   }
-    //   words[index] = sentence;
-    //   //console.log(words);
-    //
-    // }
-
     this.props.recorder.onUpdate = words => {
-      var text = [].concat.apply([], words);
+      var text = [].concat.apply([], words).filter(w => w);
 
       axios.get(`http://localhost:8080/correction?sentence=${text.map(w => { console.log(text, w); return w.text }).join(' ')}`).then(({data}) => {
           if (data && data.matches) {
