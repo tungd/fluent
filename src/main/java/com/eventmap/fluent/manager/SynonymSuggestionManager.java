@@ -115,8 +115,8 @@ public class SynonymSuggestionManager {
 //			}
 		Matches matchList = new Matches();
 		for (Word verb: verbList) {
-			
-			
+
+
 			int position = text.substring(0, verb.beginPosition()).split(" ").length;
 			System.out.println("SubString: "+text.substring(0, verb.beginPosition())+ " Begin position"+position + " Column position:" +verb.beginPosition());
 			Match match= synonymSuggestion(verb.word(), "VP",position);
@@ -214,7 +214,7 @@ public class SynonymSuggestionManager {
 		AdjectiveSynset[] adjHynponyms;
 		VerbSynset verbSynset;
 		VerbSynset[] verbHynponyms;
-		String suggestMessage="Synonym:";
+		String suggestMessage="Synonym: ";
 
 		WordNetDatabase database = WordNetDatabase.getFileInstance();
 		SynsetType wordType = null;
@@ -244,7 +244,7 @@ public class SynonymSuggestionManager {
 			    		listSyn=listSyn+ list+",";
 			    	}
 				}
-		    suggestMessage =suggestMessage + adjSyn.getWordForms()[0]+ ":" + adjSyn.getDefinition() +"\n Synonym:"+ listSyn+ "\n \n";
+		    suggestMessage =suggestMessage + adjSyn.getWordForms()[0]+ ":" + adjSyn.getDefinition() +"\n Synonym: "+ listSyn+ "\n \n";
 		    if (i>=3)
 		    	break;
 			}
@@ -270,7 +270,7 @@ public class SynonymSuggestionManager {
 			    	break;
 			}
 		}
-		if (suggestMessage.equals("Synonym:")) {
+		if (suggestMessage.equals("Synonym: ")) {
 			return null;
 		}
 		match.setMessages(suggestMessage);
