@@ -53,7 +53,7 @@ public class FluentMainController {
         	matchList.getMatches().addAll(synonymManagement.suggestWordProcess(sentence).getMatches());
             return matchList;
         }catch (Exception e){
-            throw new FluentException();
+            throw new FluentException(e);
         }
     }
 
@@ -70,7 +70,7 @@ public class FluentMainController {
         try {
             return grammarCorrectionManagement.addRule(ruleContent);
         }catch(Exception e){
-            throw new FluentException();
+            throw new FluentException(e);
         }
     }
 
@@ -80,7 +80,7 @@ public class FluentMainController {
         try {
             return grammarCorrectionManagement.getSummarize(text, duration);
         }catch(Exception e){
-            throw new FluentException();
+            throw new FluentException(e);
         }
     }
 
@@ -90,7 +90,7 @@ public class FluentMainController {
         try {
             return grammarCorrectionManagement.getResult();
         }catch(Exception e){
-            throw new FluentException();
+            throw new FluentException(e);
         }
     }
 

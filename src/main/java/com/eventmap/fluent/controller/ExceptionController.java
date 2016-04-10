@@ -14,6 +14,7 @@ public class ExceptionController {
     public ModelAndView myError(Exception exception) {
         System.out.println("----Caught FluentException----");
         ModelAndView mav = new ModelAndView();
+        mav.addObject("exc", exception);
         mav.addObject("message", "Troubles");
         mav.setViewName("myerror");
         return mav;

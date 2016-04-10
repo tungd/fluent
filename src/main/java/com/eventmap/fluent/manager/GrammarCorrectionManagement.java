@@ -36,9 +36,9 @@ public class GrammarCorrectionManagement {
 
     private static final Logger logger = Logger.getLogger(GrammarCorrectionManagement.class);
 
-    private JLanguageTool jLanguageTool;
+    private static JLanguageTool jLanguageTool;
 
-    public Matches correctData(String inputString) throws Exception{
+    public static synchronized Matches correctData(String inputString) throws Exception{
         // uppercase first character of inputString
         inputString = inputString.toUpperCase().charAt(0) +  inputString.substring(1);
 
@@ -62,7 +62,7 @@ public class GrammarCorrectionManagement {
         return matches;
     }
 
-    private void loadCustomRules() throws IOException{
+    private static void loadCustomRules() throws IOException{
 
         List<AbstractPatternRule> lsApbstractPatternRule = jLanguageTool.loadPatternRules(StaticStrings.RULES_PATH);
         for (AbstractPatternRule patternRule : lsApbstractPatternRule) {
@@ -95,7 +95,7 @@ public class GrammarCorrectionManagement {
         int incorrectWords = lsRuleMatch.size();
         int correctWords = totalWords - incorrectWords;
 
-        float speedAverage = totalWords * 1.0f/speechTime*1000*60;
+        float speedAverage = totalWords * 1.0f / speechTime * 1000 * 60;
 
         SummarizeResult summarizeResult = new SummarizeResult();
         summarizeResult.setTotalWords(totalWords);
