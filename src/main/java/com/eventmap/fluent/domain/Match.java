@@ -8,17 +8,17 @@ import java.util.List;
  */
 public class Match implements Serializable {
 
-    private String position;
+    private int position;
 
     private String messages;
 
     private List<String> correction;
 
-    public String getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(int position) {
         this.position = position;
     }
 

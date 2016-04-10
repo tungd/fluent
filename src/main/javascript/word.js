@@ -1,17 +1,12 @@
-
 import React, { Component } from 'react';
 
 export default class Word extends Component {
 
   render() {
-    let classes = ["word"]
-
-    if (this.props.final) {
-      classes.push("final")
-    }
+    console.log(this.props);
 
     return (
-      <div className={classes.join(' ')}>{this.props.text}</div>
+      <div className={`word ${this.props.final ? 'final' : ''} ${this.props.correction ? 'error' : ''}`}>{this.props.text}</div>
     )
   }
 }

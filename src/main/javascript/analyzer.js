@@ -1,26 +1,73 @@
+
 import React, { Component } from 'react';
-import QueueAnim from 'rc-queue-anim'
+import ReactDOM from 'react-dom';
+import QueueAnim from 'rc-queue-anim';
+import _ from 'lodash';
+import axios from 'axios';
 
 import Word from './word';
 
 const mock = [
-  // { text: 'Hello', duration: 10, final: true },
-  // { text: 'nice', duration: 10, final: true },
-  // { text: 'to', duration: 10, final: true },
-  // { text: 'meet', duration: 10, final: true },
-  // { text: 'you', duration: 10, final: true },
-  // { text: 'all', duration: 10, final: false },
+  { text: 'Hello', duration: 10, final: true },
+  { text: 'nice', duration: 10, final: true },
+  { text: 'to', duration: 10, final: true },
+  { text: 'meet', duration: 10, final: true },
+  { text: 'you', duration: 10, final: true },
+  { text: 'all', duration: 10, final: false }
 ];
+
+let scrolling = false;
+
+function scrollTo(element, to, duration) {
+  if (duration <= 0) return;
+  let difference = to - element.scrollTop,
+      perTick = difference / duration * 10;
+
+  setTimeout(function() {
+    element.scrollTop = element.scrollTop + perTick;
+    if (element.scrollTop === to) return;
+    scrollTo(element, to, duration - 10);
+  }, 10);
+}
+
 
 export default class Analyzer extends Component {
 
   constructor(props) {
     super(props);
 
-    // this.state = { words: [] };
-    this.state = { words: mock };
+    this.props.recorder.onUpdate = words => {
+      var text = [].concat.apply([], words).filter(w => w);
 
-    this.props.recorder.onUpdate = words => this.setState({ words })
+      axios.get(`http://localhost:8080/correction?sentence=${text.map(w => { console.log(text, w); return w.text }).join(' ')}`).then(({data}) => {
+          if (data && data.matches) {
+            data.matches.forEach((m, i) => {
+              console.log(m.position - 1, text[m.position - 1]);
+              text[m.position] = Object.assign(text[m.position], {
+                messages: m.messages,
+                correction: m.correction
+              });
+            });
+          }
+        this.setState({ words: text });
+      });
+      this.setState({ words: text });
+    };
+
+    // this.state = { words: mock };
+    this.state = { words: [] };
+
+    this.scrolling = false;
+    this.scrollToBottom = _.debounce(_ => {
+      if (this.scrolling) {
+        return;
+      }
+      ReactDOM.findDOMNode(this).scrollTop = 999999
+    });
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
   }
 
   renderWord(word, i) {
@@ -43,7 +90,9 @@ export default class Analyzer extends Component {
 
     return (
       <div className="analyzer">
-        {words.map(this.renderSentence.bind(this))}
+        <div className="analyzer__inner">
+          {words.map(this.renderWord.bind(this))}
+        </div>
       </div>
     )
   }

@@ -1,7 +1,11 @@
 package com.eventmap.fluent.controller;
 
+<<<<<<< HEAD
 import java.util.concurrent.CompletableFuture;
 
+=======
+import com.eventmap.fluent.domain.ResultHub;
+>>>>>>> 3807356264fc72326674364e65b0616bbfbd61e7
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,6 +20,7 @@ import com.eventmap.fluent.manager.GrammarCorrectionManagement;
 import com.eventmap.fluent.manager.SynonymSuggestionManager;
 import com.eventmap.fluent.domain.Matches;
 import com.eventmap.fluent.domain.SummarizeResult;
+import com.eventmap.fluent.exception.FluentException;
 import com.eventmap.fluent.manager.GrammarCorrectionManagement;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,15 +54,13 @@ public class FluentMainController {
     @RequestMapping(value = "correction"/*, method = RequestMethod.POST*/)
     @ResponseBody
     public Matches grammarCheck(@RequestParam String sentence){
-         Matches matches =  grammarCorrectionManagement.correctData(sentence);
-         return matches;
-    	
-//    	CompletableFuture<Matches> grammarMatches;
-//    	CompletableFuture<Matches> sysnonymMatches;
-    	
-//    	return CompletableFuture.allOf(grammarMatches, sysnonymMatches);
+        try {
+            return grammarCorrectionManagement.correctData(sentence);
+        }catch (Exception e){
+            throw new FluentException();
+        }
     }
-    
+
     @RequestMapping(value="synonym", method = RequestMethod.POST)
     @ResponseBody
     public Matches synonymCheck(@RequestParam String text) {
@@ -68,7 +71,11 @@ public class FluentMainController {
     @RequestMapping(value = "addition", method = RequestMethod.POST)
     @ResponseBody
     public String addRule(@RequestBody String ruleContent) {
-        return grammarCorrectionManagement.addRule(ruleContent);
+        try {
+            return grammarCorrectionManagement.addRule(ruleContent);
+        }catch(Exception e){
+            throw new FluentException();
+        }
     }
 
     @RequestMapping(value = "summarize", method = RequestMethod.POST)
@@ -77,14 +84,14 @@ public class FluentMainController {
         return grammarCorrectionManagement.getSummarize(finalResult);
     }
 
-    @ResponseStatus(value= HttpStatus.INTERNAL_SERVER_ERROR, reason="Network")
-    @ExceptionHandler(Exception.class)
-    public ModelAndView handleError(HttpServletRequest req, Exception exception) {
-        logger.error("Request: " + req.getRequestURL() + " raised " + exception);
-
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("messages", "Troubles");
-        mav.setViewName("error");
-        return mav;
+    @RequestMapping(value = "getResult")
+    @ResponseBody
+    public ResultHub getResult(){
+        try {
+            return grammarCorrectionManagement.getResult();
+        }catch(Exception e){
+            throw new FluentException();
+        }
     }
+
 }
