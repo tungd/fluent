@@ -212,7 +212,7 @@ public class SynonymSuggestionManager {
 		AdjectiveSynset[] adjHynponyms;
 		VerbSynset verbSynset;
 		VerbSynset[] verbHynponyms;
-		String suggestMessage="Synonym available: ";
+		String suggestMessage="Synonym:";
 
 		WordNetDatabase database = WordNetDatabase.getFileInstance();
 		SynsetType wordType = null;
