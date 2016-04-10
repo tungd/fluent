@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
+import axios from 'axios';
 
 import Recorder from './recorder';
 import Analyzer from './analyzer';
 import ToolBar  from './toolbar';
 
-const isMobile = true
-// /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+// const isMobile = true
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
 class App extends Component {
 
@@ -34,6 +35,14 @@ class App extends Component {
       this.recorder.start();
     } else {
       this.recorder.stop();
+      let duration = this.recorder.endAt - this.recorder.startAt,
+          text = [].concat.apply([], this.recorder.words).filter(w => w).map(w => w.text).join(' ')
+
+      axios.get(`http://192.168.1.115:8080/summarize?text=${text}&duration=${duration}`)
+        .then(data => {
+          // TODO: display summarize screen
+          console.log(data)
+        })
     }
   }
 

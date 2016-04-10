@@ -1,7 +1,7 @@
 package com.eventmap.fluent.controller;
 
-import com.eventmap.fluent.domain.ResultHub;
 import com.eventmap.fluent.domain.*;
+import com.eventmap.fluent.domain.ResultHub;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
