@@ -34,5 +34,6 @@ $ mvn clean dependency:resolve
 ## Start
 ```
 $ npm start
+$ mvn spring-boot:run
 $ open localhost:3333
 ```
